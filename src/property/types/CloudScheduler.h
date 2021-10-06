@@ -24,61 +24,139 @@
 
 #include <Arduino.h>
 #include "../Property.h"
+#include "utility/time/TimeService.h"
+#include <time.h>
 
 /******************************************************************************
    CLASS DECLARATION
  ******************************************************************************/
+enum class MaskType : int {
+  minute =  0,
+  hour   =  1,
+  day    =  2,
+  week   =  3, /*Weekly daymask */
+  month  =  4, /*Day of the month 1-31 */
+  year   =  5  /*Month 1-12 + Day of the month 1-31 */
+};
 
-class Scheduler {
+class Scheduler : public TimeService {
   public:
-    CloudTime start, end, duration;
+    unsigned int start, end, duration;
     int type;
-    CloudTime interval;
-    Color(float h, float s, float b): hue(h), sat(s), bri(b) {
-      setColorHSB(h, s, b);
-    }
+    unsigned int mask;
+    Scheduler(unsigned int s, unsigned int e, unsigned int d, int t, unsigned int m): start(s), end(e), duration(d), type(t), mask(m) {}
 
     bool isActive() {
-      if (now > start && now < end) {
-        CloudTime delta = getNextSchedule(now);
-        while (start + delta < now) {
-          if (start + delta + duration > now) {
-            return true;
+
+      unsigned int now = getTime();
+      if(now >= start && (now < end || end == 0)) {
+        /* We are in the schedule range */
+
+        if(type == 3 || type == 4 || type == 5) {
+          unsigned int nowmask = timeToMask(type, now);
+          if ( (nowmask & mask) == 0) {
+            /* This is not the correct Day or Month */
+            return false;
           }
-          delta += getNextSchedule();
+        }
+
+        /* We can assume now that the schedule is always repeating with fixed delta */ 
+        unsigned int delta = getScheduleDelta(type);
+        if ( (abs(now - start) % delta ) < duration ) {
+          return true;
         }
       }
       return false;
     }
 
+    Scheduler& operator=(Scheduler & aScheduler) {
+      start = aScheduler.start;
+      end = aScheduler.end;
+      duration = aScheduler.duration;
+      type = aScheduler.type;
+      mask = aScheduler.mask;
+      return *this;
+    }
+
+    bool operator==(Scheduler & aScheduler) {
+      return start == aScheduler.start && end == aScheduler.end && duration == aScheduler.duration && type == aScheduler.type && mask == aScheduler.mask;
+    }
+
+    bool operator!=(Scheduler & aScheduler) {
+      return !(operator==(aScheduler));
+    }
+  private:
+
+    unsigned int timeToMask(int type, time_t rawtime) {
+      struct tm * ptm;
+      ptm = gmtime ( &rawtime );
+
+      if (type == 3) {
+        return 1 << ptm->tm_wday;
+      }
+
+      if (type == 4) {
+        return 1 << ptm->tm_mday;
+      }
+
+      if (type == 5) {
+        return ((1 << ptm->tm_mon) << 16) | 1 << ptm->tm_mday;
+      }
+      return 0;
+    }
+
+    unsigned int getScheduleDelta(int type) {
+      if (type == 1) {
+        return 60;
+      }
+
+      if (type == 2) {
+        return 60 * 60;
+      }
+
+      if (type == 3) {
+        return 60 * 60 * 24;
+      }
+
+      if (type == 4) {
+        return 60 * 60 * 24;
+      }
+
+      if (type == 5) {
+        return 60 * 60 * 24;
+      }
+      return 0;
+    }
 };
 
-class CloudColor : public Property {
+class CloudScheduler : public Property {
   private:
-    Color _value,
-          _cloud_value;
+    Scheduler _value,
+              _cloud_value;
   public:
-    CloudColor() : _value(0, 0, 0), _cloud_value(0, 0, 0) {}
-    CloudColor(float hue, float saturation, float brightness) : _value(hue, saturation, brightness), _cloud_value(hue, saturation, brightness) {}
+    CloudScheduler() : _value(0, 0, 0, 0, 0), _cloud_value(0, 0, 0, 0, 0) {}
+    CloudScheduler(unsigned int start, unsigned int end, unsigned int duration, int type, unsigned int mask) : _value(start, end, duration, type, mask), _cloud_value(start, end, duration, type, mask) {}
 
     virtual bool isDifferentFromCloud() {
 
       return _value != _cloud_value;
     }
 
-    CloudColor& operator=(Color aColor) {
-      _value.hue = aColor.hue;
-      _value.sat = aColor.sat;
-      _value.bri = aColor.bri;
+    CloudScheduler& operator=(Scheduler aScheduler) {
+      _value.start = aScheduler.start;
+      _value.end = aScheduler.end;
+      _value.duration = aScheduler.duration;
+      _value.type = aScheduler.type;
+      _value.mask = aScheduler.mask;
       updateLocalTimestamp();
       return *this;
     }
 
-    Color getCloudValue() {
+    Scheduler getCloudValue() {
       return _cloud_value;
     }
 
-    Color getValue() {
+    Scheduler getValue() {
       return _value;
     }
 
@@ -89,15 +167,19 @@ class CloudColor : public Property {
       _cloud_value = _value;
     }
     virtual CborError appendAttributesToCloud() {
-      CHECK_CBOR(appendAttribute(_value.hue));
-      CHECK_CBOR(appendAttribute(_value.sat));
-      CHECK_CBOR(appendAttribute(_value.bri));
+      CHECK_CBOR(appendAttribute(_value.start));
+      CHECK_CBOR(appendAttribute(_value.end));
+      CHECK_CBOR(appendAttribute(_value.duration));
+      CHECK_CBOR(appendAttribute(_value.type));
+      CHECK_CBOR(appendAttribute(_value.mask));
       return CborNoError;
     }
     virtual void setAttributesFromCloud() {
-      setAttribute(_cloud_value.hue);
-      setAttribute(_cloud_value.sat);
-      setAttribute(_cloud_value.bri);
+      setAttribute(_cloud_value.start);
+      setAttribute(_cloud_value.end);
+      setAttribute(_cloud_value.duration);
+      setAttribute(_cloud_value.type);
+      setAttribute(_cloud_value.mask);
     }
 };
 
