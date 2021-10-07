@@ -96,11 +96,11 @@ class Scheduler : public TimeService {
       }
 
       if (type == 4) {
-        return 1 << ptm->tm_mday;
+        return ptm->tm_mday;
       }
 
       if (type == 5) {
-        return ((1 << ptm->tm_mon) << 16) | 1 << ptm->tm_mday;
+        return (tm->tm_mon << 16) | ptm->tm_mday;
       }
       return 0;
     }
