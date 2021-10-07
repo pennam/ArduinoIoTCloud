@@ -62,7 +62,7 @@ class Scheduler : public TimeService {
 
         /* We can assume now that the schedule is always repeating with fixed delta */ 
         unsigned int delta = getScheduleDelta(type, mask);
-        if ( ( (std::max(now , start) - std::min(now , start)) % delta ) < duration ) {
+        if ( ( (std::max(now , start) - std::min(now , start)) % delta ) <= duration ) {
           return true;
         }
       }
