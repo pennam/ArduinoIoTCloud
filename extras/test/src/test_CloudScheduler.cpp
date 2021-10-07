@@ -135,3 +135,62 @@ SCENARIO("Setup a schedule that repeats each 20 minutes and test isActive Method
   }
 }
 
+/**************************************************************************************/
+
+SCENARIO("Setup a weekly schedule and test isActive Method", "[Scheduler::isActive]")
+{
+  Scheduler schedule(1633305600,   /* Start 4/10/2021 00:00:00 */
+                     1633651200,   /* End   8/10/2021 00:00:00 */
+                            600,   /* Duration        00:10:00 */
+                              3,   /* Weekly                   */
+                             70    /* Daymask          1000110 */
+                    );
+
+  WHEN("Time is 4/10/2021 00:05:00")
+  {
+    time_now = 1633305900;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 4/10/2021 00:25:00")
+  {
+    time_now = 1633307100;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 5/10/2021 00:05:00")
+  {
+    time_now = 1633392300;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 5/10/2021 00:25:00")
+  {
+    time_now = 1633393500;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/10/2021 00:05:00")
+  {
+    time_now = 1633478700;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 7/10/2021 00:05:00")
+  {
+    time_now = 1633565100;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+}
