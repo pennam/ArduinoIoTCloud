@@ -61,7 +61,7 @@ class Scheduler : public TimeService {
         }
 
         /* We can assume now that the schedule is always repeating with fixed delta */ 
-        unsigned int delta = getScheduleDelta(type);
+        unsigned int delta = getScheduleDelta(type, mask);
         if ( ( (std::max(now , start) - std::min(now , start)) % delta ) < duration ) {
           return true;
         }
@@ -105,13 +105,17 @@ class Scheduler : public TimeService {
       return 0;
     }
 
-    unsigned int getScheduleDelta(int type) {
+    unsigned int getScheduleDelta(int type, unsigned int mask) {
+      if (type == 0) {
+        return 60 * mask;
+      }
+
       if (type == 1) {
-        return 60;
+        return 60 * 60 * mask;
       }
 
       if (type == 2) {
-        return 60 * 60;
+        return 60 * 60 * 24 * mask;
       }
 
       if (type == 3) {
