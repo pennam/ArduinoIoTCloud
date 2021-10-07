@@ -7,9 +7,10 @@
  **************************************************************************************/
 
 #include <catch.hpp>
-#include <fakeit.hpp>
 
 #include <property/types/CloudScheduler.h>
+
+unsigned long time_now = 1;
 
 /**************************************************************************************
  * TimeService Fake CTOR/DTOR
@@ -21,7 +22,7 @@ TimeService::TimeService() {}
  * TimeService Fake Methods
  **************************************************************************************/
 
-unsigned long TimeService::getTime() {return 0;}
+unsigned long TimeService::getTime() {return time_now;}
 
 /**************************************************************************************
   TEST CODE
