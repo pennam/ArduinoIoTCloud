@@ -424,3 +424,86 @@ SCENARIO("Setup a yearly schedule and test isActive Method", "[Scheduler::isActi
   }
 }
 
+/**************************************************************************************/
+
+SCENARIO("Setup a one shot schedule and test isActive Method", "[Scheduler::isActive]")
+{
+  Scheduler schedule(1636156800,   /* Start 6/11/2021 00:00:00 */
+                     1636243199,   /* End   6/11/2021 23:59:59 */
+                            600,   /* Duration        00:10:00 */
+                              0    /* One shot                 */
+                    );
+
+  WHEN("Time is 6/11/2020 00:05:00")
+  {
+    time_now = 1604621100;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/11/2021 00:05:00")
+  {
+    time_now = 1636157100;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 6/11/2021 00:25:00")
+  {
+    time_now = 1636158300;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/11/2022 00:05:00")
+  {
+    time_now = 1667693100;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 7/11/2021 00:05:00")
+  {
+    time_now = 1636243500;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 7/11/2021 00:15:00")
+  {
+    time_now = 1636244100;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/11/2021 00:11:00")
+  {
+    time_now = 1636157460;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/11/2021 00:01:00")
+  {
+    time_now = 1636156860;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 7/11/2021 00:11:00")
+  {
+    time_now = 1636243860;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+}
+
