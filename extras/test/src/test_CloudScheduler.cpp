@@ -339,3 +339,88 @@ SCENARIO("Setup a monthly schedule and test isActive Method", "[Scheduler::isAct
     }
   }
 }
+
+/**************************************************************************************/
+
+SCENARIO("Setup a yearly schedule and test isActive Method", "[Scheduler::isActive]")
+{
+  Scheduler schedule(1633305600,   /* Start 4/10/2021 00:00:00 */
+                     1759536000,   /* End   4/10/2025 00:00:00 */
+                            600,   /* Duration        00:10:00 */
+                      268438022    /* Yearly                   */
+                                   /* Month 11, Day of month 6 */
+                    );
+
+  WHEN("Time is 6/11/2020 00:05:00")
+  {
+    time_now = 1604621100;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/11/2021 00:05:00")
+  {
+    time_now = 1636157100;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 6/11/2021 00:25:00")
+  {
+    time_now = 1636158300;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/11/2022 00:05:00")
+  {
+    time_now = 1667693100;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 6/11/2022 00:25:00")
+  {
+    time_now = 1667694300;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 7/11/2021 00:05:00")
+  {
+    time_now = 1636243500;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+
+  WHEN("Time is 6/11/2023 00:05:00")
+  {
+    time_now = 1699229100;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 6/11/2024 00:05:00")
+  {
+    time_now = 1730851500;
+    THEN("Schedule must be active") {
+      REQUIRE(schedule.isActive() == true);
+    }
+  }
+
+  WHEN("Time is 6/11/2025 00:05:00")
+  {
+    time_now = 1762387500;
+    THEN("Schedule must be inactive") {
+      REQUIRE(schedule.isActive() == false);
+    }
+  }
+}
+
