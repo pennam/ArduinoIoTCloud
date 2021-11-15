@@ -97,6 +97,9 @@ enum class ScheduleState : int {
 /******************************************************************************
  * TYPEDEF
  ******************************************************************************/
+typedef void (*_onScheduleEventStartCallbackFunc)(void);
+typedef void (*_onScheduleEventEndCallbackFunc)(void);
+
 typedef struct ScheduleWeeklyMask {
   ScheduleState& operator[](ScheduleWeekDay i) { return day[static_cast<int>(i)];}
   ScheduleState day[7];
@@ -108,10 +111,12 @@ typedef struct ScheduleWeeklyMask {
 class Schedule : public TimeService {
   public:
     unsigned int frm, to, len, msk;
-    Schedule(unsigned int s, unsigned int e, unsigned int d, unsigned int m): frm(s), to(e), len(d), msk(m) {}
+    Schedule(unsigned int s, unsigned int e, unsigned int d, unsigned int m, _onScheduleEventStartCallbackFunc onStart,  _onScheduleEventEndCallbackFunc onEnd): frm(s), to(e), len(d), msk(m), _onScheduleEventStartCallback(onStart), _onScheduleEventEndCallback(onEnd), _internal_state(false) {}
+    Schedule(unsigned int s, unsigned int e, unsigned int d, unsigned int m): frm(s), to(e), len(d), msk(m), _onScheduleEventStartCallback(nullptr), _onScheduleEventEndCallback(nullptr), _internal_state(false) {}
 
-    bool isActive() {
+    bool checkSchedule() {
 
+      bool current_state = false;
       unsigned int now = getTime();
       if(checkSchedulePeriod(now, frm, to)) {
         /* We are in the schedule range */
@@ -121,11 +126,35 @@ class Schedule : public TimeService {
           /* We can assume now that the schedule is always repeating with fixed delta */ 
           unsigned int delta = getScheduleDelta(msk);
           if ( ( (std::max(now , frm) - std::min(now , frm)) % delta ) <= len ) {
-            return true;
+            current_state = true;
           }
         }
       }
-      return false;
+
+      if (current_state != _internal_state) {
+        if(current_state && _onScheduleEventStartCallback != nullptr) {
+          _onScheduleEventStartCallback();
+        }
+
+        if(!current_state && _onScheduleEventEndCallback != nullptr) {
+          _onScheduleEventEndCallback();
+        }
+
+        _internal_state = current_state;
+      }
+      return current_state;
+    }
+
+    bool isActive() {
+      return checkSchedule();
+    }
+
+    void setOnEventStartCallback(_onScheduleEventStartCallbackFunc onStart) {
+      _onScheduleEventStartCallback = onStart;
+    }
+
+    void setOnEventEndCallback(_onScheduleEventEndCallbackFunc onEnd) {
+      _onScheduleEventEndCallback = onEnd;
     }
 
     static unsigned int createOneShotScheduleConfiguration() {
@@ -193,6 +222,10 @@ class Schedule : public TimeService {
       return !(operator==(aSchedule));
     }
   private:
+    bool _internal_state;
+    _onScheduleEventStartCallbackFunc _onScheduleEventStartCallback;
+    _onScheduleEventEndCallbackFunc _onScheduleEventEndCallback;
+
     ScheduleUnit getScheduleUnit(unsigned int msk) {
       return static_cast<ScheduleUnit>((msk & SCHEDULE_UNIT_MASK) >> SCHEDULE_UNIT_SHIFT);
     }
@@ -391,6 +424,18 @@ class CloudSchedule : public Property {
 
     bool isActive() {
       return _value.isActive();
+    }
+
+    void checkSchedule() {
+      _value.isActive();
+    }
+
+    void onScheduleEventStart(_onScheduleEventStartCallbackFunc onStart) {
+      _value.setOnEventStartCallback(onStart);
+    }
+
+    void onScheduleEventEnd(_onScheduleEventEndCallbackFunc onEnd) {
+      _value.setOnEventEndCallback(onEnd);
     }
 
     virtual void fromCloudToLocal() {
