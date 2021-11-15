@@ -22,7 +22,8 @@
 #include "TimeService.h"
 
 #include <time.h>
-
+#include <iomanip>
+#include <sstream>
 #include "NTPUtils.h"
 
 /**************************************************************************************
@@ -89,6 +90,19 @@ unsigned long TimeService::getTime()
 #else
   return getRemoteTime();
 #endif
+}
+
+unsigned long TimeService::getTimeFromString(const String& timeString)
+{
+  struct tm t;
+  std::istringstream ss(timeString.c_str());
+  ss >> std::get_time(&t, "%Y %b %d %H:%M:%S");
+
+  if(!ss) {
+    return 0;
+  } else {
+    return mktime(&t);
+  }
 }
 
 /**************************************************************************************

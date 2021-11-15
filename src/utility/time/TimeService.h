@@ -23,6 +23,7 @@
  **************************************************************************************/
 
 #include <Arduino_ConnectionHandler.h>
+#include <string>
 
 #ifdef ARDUINO_ARCH_SAMD
   #include <RTCZero.h>
@@ -46,6 +47,7 @@ public:
 
   void          begin  (ConnectionHandler * con_hdl);
   unsigned long getTime();
+  static unsigned long getTimeFromString(const String& timeString);
 
 private:
 
