@@ -51,6 +51,9 @@ void setup() {
   unsigned int scheduleConfiguration =  Schedule::createWeeklyScheduleConfiguration(WeeklyMask);
 
   led = Schedule(startingFrom, untilTo, executionPeriod, scheduleConfiguration);
+
+  led.onScheduleEventStart(onLedEventStart);
+  led.onScheduleEventEnd(onLedEventEnd);
 }
 
 void loop() {
@@ -59,5 +62,15 @@ void loop() {
   /* Activate LED when schedule is active */
   digitalWrite(LED_BUILTIN, led.isActive());
   
+}
+
+void onLedEventStart()
+{
+  Serial.println("LED event start");
+}
+
+void onLedEventEnd()
+{
+  Serial.println("LED event stop");
 }
 
