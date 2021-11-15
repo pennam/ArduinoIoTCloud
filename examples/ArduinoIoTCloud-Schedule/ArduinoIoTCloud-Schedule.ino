@@ -36,10 +36,19 @@ void setup() {
   ArduinoCloud.printDebugInfo();
 
   /* Configure a schedule for LED. This should be done with Arduino create Scheduler widget */
-  unsigned int startingFrom = 1635786000;                /* From 01/11/2021 17:00           */
-  unsigned int untilTo = startingFrom + ( DAYS * 28 );   /* To   29/11/2021 17:00           */
-  unsigned int executionPeriod = MINUTES * 6;            /* For         6 minutes           */
-  unsigned int scheduleConfiguration =  134217770;       /* On monday wednesday and friday  */
+  unsigned int startingFrom = Schedule::getTimeFromString("2021 Nov 01 17:00:00");      /* From 01/11/2021 17:00 */
+  unsigned int untilTo = startingFrom + ( DAYS * 28 );                                  /* To   29/11/2021 17:00 */
+  unsigned int executionPeriod = MINUTES * 6;                                           /* For         6 minutes */
+  ScheduleWeeklyMask WeeklyMask = {
+    ScheduleState::Inactive,                                                            /* Sunday    -> Inactive */
+    ScheduleState::Active,                                                              /* Monday    -> Active   */
+    ScheduleState::Inactive,                                                            /* Tuesday   -> Inactive */
+    ScheduleState::Active,                                                              /* Wednesday -> Active   */
+    ScheduleState::Inactive,                                                            /* Thursday  -> Inactive */
+    ScheduleState::Active,                                                              /* Friday    -> Active   */
+    ScheduleState::Inactive,                                                            /* Saturday  -> Inactive */
+  };
+  unsigned int scheduleConfiguration =  Schedule::createWeeklyScheduleConfiguration(WeeklyMask);
 
   led = Schedule(startingFrom, untilTo, executionPeriod, scheduleConfiguration);
 }
