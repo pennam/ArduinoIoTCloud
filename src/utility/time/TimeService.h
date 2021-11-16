@@ -23,7 +23,6 @@
  **************************************************************************************/
 
 #include <Arduino_ConnectionHandler.h>
-#include <string>
 
 #ifdef ARDUINO_ARCH_SAMD
   #include <RTCZero.h>

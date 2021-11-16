@@ -22,8 +22,7 @@
 #include "TimeService.h"
 
 #include <time.h>
-#include <iomanip>
-#include <sstream>
+
 #include "NTPUtils.h"
 
 /**************************************************************************************
@@ -94,15 +93,35 @@ unsigned long TimeService::getTime()
 
 unsigned long TimeService::getTimeFromString(const String& timeString)
 {
-  struct tm t;
-  std::istringstream ss(timeString.c_str());
-  ss >> std::get_time(&t, "%Y %b %d %H:%M:%S");
+  char s_month[5];
+  int month, day, year, hour, minutes, seconds;
+  struct tm t =
+  {
+    0 /* tm_sec   */,
+    0 /* tm_min   */,
+    0 /* tm_hour  */,
+    0 /* tm_mday  */,
+    0 /* tm_mon   */,
+    0 /* tm_year  */,
+    0 /* tm_wday  */,
+    0 /* tm_yday  */,
+    0 /* tm_isdst */
+  };
+  static const char month_names[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
 
-  if(!ss) {
-    return 0;
-  } else {
-    return mktime(&t);
-  }
+  sscanf(timeString.c_str(), "%d %s %d %d:%d:%d", &year, s_month, &day, &hour, &minutes, &seconds);
+
+  month = (strstr(month_names, s_month) - month_names) / 3;
+
+  t.tm_mon = month;
+  t.tm_mday = day;
+  t.tm_year = year - 1900;
+  t.tm_hour = hour;
+  t.tm_min = minutes;
+  t.tm_sec = seconds;
+  t.tm_isdst = -1;
+
+  return mktime(&t);
 }
 
 /**************************************************************************************
