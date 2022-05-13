@@ -115,8 +115,8 @@
 #endif
 
 #if defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKR1000) ||   \
-  defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_PORTENTA_H7_M7)      ||   \
-  defined (ARDUINO_NANO_RP2040_CONNECT)
+  defined(ARDUINO_SAMD_MKRNB1500) || defined (ARDUINO_NANO_RP2040_CONNECT) || \
+  defined(ARDUINO_PORTENTA_H7_M7)
   #define BOARD_HAS_ECCX08
   #define HAS_TCP
 #endif
@@ -132,7 +132,7 @@
   #define HAS_TCP
 #endif
 
-#if defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310)
+#if defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) || defined(ARDUINO_PORTENTA_H7_M7)
   #define HAS_LORA
 #endif
 
