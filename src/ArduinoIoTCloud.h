@@ -185,7 +185,8 @@ class ArduinoIoTCloudClass
 
 #ifdef HAS_TCP
   #include "ArduinoIoTCloudTCP.h"
-#elif defined(HAS_LORA)
+#endif
+#ifdef HAS_LORA
   #include "ArduinoIoTCloudLPWAN.h"
 #endif
 
