@@ -73,10 +73,4 @@ class ArduinoIoTCloudLPWAN : public ArduinoIoTCloudClass
     int writeProperties(const byte data[], int length);
 };
 
-/******************************************************************************
- * EXTERN DECLARATION
- ******************************************************************************/
-
-extern ArduinoIoTCloudLPWAN ArduinoCloud;
-
 #endif

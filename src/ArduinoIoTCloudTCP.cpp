@@ -820,10 +820,4 @@ void ArduinoIoTCloudTCP::updateThingTopics()
   thingUpdated();
 }
 
-/******************************************************************************
- * EXTERN DEFINITION
- ******************************************************************************/
-
-ArduinoIoTCloudTCP ArduinoCloud;
-
 #endif

@@ -160,10 +160,4 @@ int ArduinoIoTCloudLPWAN::writeProperties(const byte data[], int length)
   return 1;
 }
 
-/******************************************************************************
- * EXTERN DEFINITION
- ******************************************************************************/
-
-ArduinoIoTCloudLPWAN ArduinoCloud;
-
 #endif

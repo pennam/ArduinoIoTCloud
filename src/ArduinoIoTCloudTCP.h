@@ -208,10 +208,4 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     void updateThingTopics();
 };
 
-/******************************************************************************
- * EXTERN DECLARATION
- ******************************************************************************/
-
-extern ArduinoIoTCloudTCP ArduinoCloud;
-
 #endif
