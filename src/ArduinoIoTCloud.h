@@ -104,7 +104,7 @@ class ArduinoIoTCloudClass
 
     inline ConnectionHandler * getConnection()          { return _connection; }
 
-    inline unsigned long getInternalTime()              { return TimeService.getTime(); }
+    inline unsigned long getInternalTime()              { return TimeService.getUTCTime(); }
     inline unsigned long getLocalTime()                 { return TimeService.getLocalTime(); }
     inline void          updateInternalTimezoneInfo()   { TimeService.setTimeZoneData(_tz_offset, _tz_dst_until); }
 

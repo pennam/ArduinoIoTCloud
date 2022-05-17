@@ -74,7 +74,7 @@ void TimeServiceClass::begin(ConnectionHandler * con_hdl)
 #endif
 }
 
-unsigned long TimeServiceClass::getTime()
+unsigned long TimeServiceClass::getUTCTime()
 {
 #ifdef ARDUINO_ARCH_SAMD
   if(!_is_rtc_configured)
@@ -120,7 +120,7 @@ void TimeServiceClass::setTimeZoneData(long offset, unsigned long dst_until)
 
 unsigned long TimeServiceClass::getLocalTime()
 {
-  unsigned long utc = getTime();
+  unsigned long utc = getUTCTime();
   if(_is_tz_configured) {
     return utc + _timezone_offset;
   } else {

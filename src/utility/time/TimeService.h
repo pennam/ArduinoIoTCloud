@@ -45,7 +45,7 @@ public:
   virtual ~TimeServiceClass() { }
 
   void          begin  (ConnectionHandler * con_hdl);
-  unsigned long getTime();
+  unsigned long getUTCTime();
   unsigned long getLocalTime();
   void          setTimeZoneData(long offset, unsigned long valid_until);
   /* Helper function to convert an input String into a UNIX timestamp.
