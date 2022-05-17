@@ -132,7 +132,7 @@ int ArduinoIoTCloudTCP::begin(ConnectionHandler & connection, bool const enable_
   _connection = &connection;
   _brokerAddress = brokerAddress;
   _brokerPort = brokerPort;
-  _time_service.begin(&connection);
+  TimeService.begin(&connection);
   return begin(enable_watchdog, _brokerAddress, _brokerPort);
 }
 
@@ -387,7 +387,7 @@ ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_ConnectPhy()
 
 ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_SyncTime()
 {
-  unsigned long const internal_posix_time = _time_service.getTime();
+  unsigned long const internal_posix_time = TimeService.getTime();
   DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s internal clock configured to posix timestamp %d", __FUNCTION__, internal_posix_time);
   return State::ConnectMqttBroker;
 }
@@ -678,7 +678,7 @@ ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_Connected()
     */
     sendThingPropertiesToCloud();
 
-    unsigned long const internal_posix_time = _time_service.getTime();
+    unsigned long const internal_posix_time = TimeService.getTime();
     if(internal_posix_time < _tz_dst_until) {
       return State::Connected;
     } else {
@@ -727,7 +727,7 @@ void ArduinoIoTCloudTCP::handleMessage(int length)
   {
     DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s [%d] last values received", __FUNCTION__, millis());
     CBORDecoder::decode(_thing_property_container, (uint8_t*)bytes, length, true);
-    _time_service.setTimeZoneData(_tz_offset, _tz_dst_until);
+    TimeService.setTimeZoneData(_tz_offset, _tz_dst_until);
     execCloudEventCallback(ArduinoIoTCloudEvent::SYNC);
     _last_sync_request_cnt = 0;
     _last_sync_request_tick = 0;

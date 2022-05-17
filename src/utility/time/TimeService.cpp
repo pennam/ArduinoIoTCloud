@@ -50,7 +50,7 @@ static time_t const EPOCH = 0;
  * CTOR/DTOR
  **************************************************************************************/
 
-TimeService::TimeService()
+TimeServiceClass::TimeServiceClass()
 : _con_hdl(nullptr)
 #if defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_MBED)
 , _is_rtc_configured(false)
@@ -66,7 +66,7 @@ TimeService::TimeService()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void TimeService::begin(ConnectionHandler * con_hdl)
+void TimeServiceClass::begin(ConnectionHandler * con_hdl)
 {
   _con_hdl = con_hdl;
 #ifdef ARDUINO_ARCH_SAMD
@@ -74,7 +74,7 @@ void TimeService::begin(ConnectionHandler * con_hdl)
 #endif
 }
 
-unsigned long TimeService::getTime()
+unsigned long TimeServiceClass::getTime()
 {
 #ifdef ARDUINO_ARCH_SAMD
   if(!_is_rtc_configured)
@@ -105,7 +105,7 @@ unsigned long TimeService::getTime()
 #endif
 }
 
-void TimeService::setTimeZoneData(long offset, unsigned long dst_until)
+void TimeServiceClass::setTimeZoneData(long offset, unsigned long dst_until)
 {
   if(_timezone_offset != offset)
     DEBUG_DEBUG("ArduinoIoTCloudTCP::%s tz_offset: [%d]", __FUNCTION__, offset);
@@ -118,7 +118,7 @@ void TimeService::setTimeZoneData(long offset, unsigned long dst_until)
   _is_tz_configured = true;
 }
 
-unsigned long TimeService::getLocalTime()
+unsigned long TimeServiceClass::getLocalTime()
 {
   unsigned long utc = getTime();
   if(_is_tz_configured) {
@@ -128,7 +128,7 @@ unsigned long TimeService::getLocalTime()
   }
 }
 
-unsigned long TimeService::getTimeFromString(const String& input)
+unsigned long TimeServiceClass::getTimeFromString(const String& input)
 {
   struct tm t =
   {
@@ -192,7 +192,7 @@ unsigned long TimeService::getTimeFromString(const String& input)
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-unsigned long TimeService::getRemoteTime()
+unsigned long TimeServiceClass::getRemoteTime()
 {
 #include "../../AIoTC_Config.h"
 #ifndef HAS_LORA
@@ -229,7 +229,7 @@ unsigned long TimeService::getRemoteTime()
   return EPOCH_AT_COMPILE_TIME;
 }
 
-bool TimeService::isTimeValid(unsigned long const time)
+bool TimeServiceClass::isTimeValid(unsigned long const time)
 {
   return (time >= EPOCH_AT_COMPILE_TIME);
 }
@@ -268,7 +268,8 @@ time_t cvt_time(char const * time)
   return mktime(&t);
 }
 
-TimeService & ArduinoIoTCloudTimeService() {
-  static TimeService _timeService_instance;
-  return _timeService_instance;
-}
+/******************************************************************************
+ * EXTERN DECLARATION
+ ******************************************************************************/
+
+TimeServiceClass TimeService;
