@@ -53,6 +53,7 @@ public:
   void          begin  (ConnectionHandler * con_hdl, TimeZoneData * tz_data);
   unsigned long getUTCTime();
   unsigned long getLocalTime();
+  bool isTimeZoneDataValid();
   /* Helper function to convert an input String into a UNIX timestamp.
    * The input String format must be as follow "2021 Nov 01 17:00:00"
    */

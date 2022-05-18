@@ -114,6 +114,11 @@ unsigned long TimeServiceClass::getLocalTime()
   }
 }
 
+bool TimeServiceClass::isTimeZoneDataValid()
+{
+  return (_tz_data->dst_until > getUTCTime());
+}
+
 unsigned long TimeServiceClass::getTimeFromString(const String& input)
 {
   struct tm t =
