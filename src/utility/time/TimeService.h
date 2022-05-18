@@ -36,6 +36,12 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
+struct TimeZoneData
+{
+  int offset;
+  unsigned int dst_until;
+};
+
 class TimeServiceClass
 {
 
@@ -44,10 +50,9 @@ public:
            TimeServiceClass();
   virtual ~TimeServiceClass() { }
 
-  void          begin  (ConnectionHandler * con_hdl);
+  void          begin  (ConnectionHandler * con_hdl, TimeZoneData * tz_data);
   unsigned long getUTCTime();
   unsigned long getLocalTime();
-  void          setTimeZoneData(long offset, unsigned long valid_until);
   /* Helper function to convert an input String into a UNIX timestamp.
    * The input String format must be as follow "2021 Nov 01 17:00:00"
    */
@@ -56,12 +61,10 @@ public:
 private:
 
   ConnectionHandler * _con_hdl;
+  TimeZoneData * _tz_data;
 #if defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_MBED)
   bool _is_rtc_configured;
 #endif
-  bool _is_tz_configured;
-  long _timezone_offset;
-  unsigned long _timezone_dst_until;
 
   unsigned long getRemoteTime();
   static bool isTimeValid(unsigned long const time);

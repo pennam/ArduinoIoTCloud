@@ -22,14 +22,22 @@
 #include <ArduinoIoTCloud.h>
 
 /******************************************************************************
+ * LOCAL MODULE FUNCTIONS
+ ******************************************************************************/
+
+unsigned long getTime()
+{
+  return TimeService.getUTCTime();
+}
+
+/******************************************************************************
    CTOR/DTOR
  ******************************************************************************/
 
 ArduinoIoTCloudClass::ArduinoIoTCloudClass()
 : _connection{nullptr}
 , _last_checked_property_index{0}
-, _tz_offset{0}
-, _tz_dst_until{0}
+, _tz_info{0}
 , _thing_id{""}
 , _device_id{""}
 , _lib_version{AIOT_CONFIG_LIB_VERSION}

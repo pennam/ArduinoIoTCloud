@@ -52,12 +52,10 @@ static time_t const EPOCH = 0;
 
 TimeServiceClass::TimeServiceClass()
 : _con_hdl(nullptr)
+, _tz_data(nullptr)
 #if defined (ARDUINO_ARCH_SAMD) || defined (ARDUINO_ARCH_MBED)
 , _is_rtc_configured(false)
 #endif
-, _is_tz_configured(false)
-, _timezone_offset(0)
-, _timezone_dst_until(0)
 {
 
 }
@@ -66,9 +64,10 @@ TimeServiceClass::TimeServiceClass()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void TimeServiceClass::begin(ConnectionHandler * con_hdl)
+void TimeServiceClass::begin(ConnectionHandler * con_hdl, TimeZoneData * tz_data)
 {
   _con_hdl = con_hdl;
+  _tz_data = tz_data;
 #ifdef ARDUINO_ARCH_SAMD
   rtc.begin();
 #endif
@@ -105,24 +104,11 @@ unsigned long TimeServiceClass::getUTCTime()
 #endif
 }
 
-void TimeServiceClass::setTimeZoneData(long offset, unsigned long dst_until)
-{
-  if(_timezone_offset != offset)
-    DEBUG_DEBUG("ArduinoIoTCloudTCP::%s tz_offset: [%d]", __FUNCTION__, offset);
-  _timezone_offset = offset;
-
-  if(_timezone_dst_until != dst_until)
-    DEBUG_DEBUG("ArduinoIoTCloudTCP::%s tz_dst_unitl: [%ul]", __FUNCTION__, dst_until);
-  _timezone_dst_until = dst_until;
-
-  _is_tz_configured = true;
-}
-
 unsigned long TimeServiceClass::getLocalTime()
 {
   unsigned long utc = getUTCTime();
-  if(_is_tz_configured) {
-    return utc + _timezone_offset;
+  if(_tz_data->dst_until) {
+    return utc + _tz_data->offset;
   } else {
     return EPOCH;
   }
