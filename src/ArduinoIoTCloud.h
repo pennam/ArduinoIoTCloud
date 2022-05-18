@@ -96,12 +96,6 @@ class ArduinoIoTCloudClass
     inline void     setDeviceId(String const device_id) { _device_id = device_id; };
     inline String & getDeviceId()                       { return _device_id; };
 
-    inline void     setThingIdOutdatedFlag()            { _thing_id_outdated = true ; }
-    inline void     clrThingIdOutdatedFlag()            { _thing_id_outdated = false ; }
-    inline bool     getThingIdOutdatedFlag()            { return _thing_id_outdated; }
-
-    inline bool     deviceNotAttached()                 { return _thing_id == ""; }
-
     inline ConnectionHandler * getConnection()          { return _connection; }
 
     inline unsigned long getInternalTime()              { return _time_service.getUTCTime(); }
@@ -178,11 +172,15 @@ class ArduinoIoTCloudClass
 
     void execCloudEventCallback(ArduinoIoTCloudEvent const event);
 
+    inline void     thingUpdated()            { _shadow_thing_id = _thing_id ; }
+    inline bool     thingExpired()            { return _thing_id != _shadow_thing_id; }
+    inline bool     thingAttached()           { return _thing_id != ""; }
+
   private:
 
     String _device_id;
+    String _shadow_thing_id;
     OnCloudEventCallback _cloud_event_callback[3];
-    bool _thing_id_outdated;
 };
 
 #ifdef HAS_TCP
