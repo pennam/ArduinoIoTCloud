@@ -667,8 +667,7 @@ ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_Connected()
     */
     sendThingPropertiesToCloud();
 
-    unsigned long const internal_posix_time = TimeService.getUTCTime();
-    if(internal_posix_time < _tz_info.dst_until) {
+    if(TimeService.isTimeZoneDataValid()) {
       return State::Connected;
     } else {
       return State::RequestLastValues;
