@@ -104,8 +104,8 @@ class ArduinoIoTCloudClass
 
     inline ConnectionHandler * getConnection()          { return _connection; }
 
-    inline unsigned long getInternalTime()              { return TimeService.getUTCTime(); }
-    inline unsigned long getLocalTime()                 { return TimeService.getLocalTime(); }
+    inline unsigned long getInternalTime()              { return _time_service.getUTCTime(); }
+    inline unsigned long getLocalTime()                 { return _time_service.getLocalTime(); }
 
     void addCallback(ArduinoIoTCloudEvent const event, OnCloudEventCallback callback);
 
@@ -171,6 +171,7 @@ class ArduinoIoTCloudClass
     unsigned int _last_checked_property_index;
 
     TimeZoneData _tz_info;
+    TimeServiceClass& _time_service;
 
     String _thing_id;
     String _lib_version;

@@ -37,6 +37,7 @@ unsigned long getTime()
 ArduinoIoTCloudClass::ArduinoIoTCloudClass()
 : _connection{nullptr}
 , _last_checked_property_index{0}
+, _time_service{TimeService}
 , _tz_info{0}
 , _thing_id{""}
 , _device_id{""}
