@@ -59,6 +59,8 @@
 extern RTC_HandleTypeDef RTCHandle;
 #endif
 
+ArduinoIoTCloudTCP * ArduinoCloudPtr = nullptr;
+
 /******************************************************************************
    CTOR/DTOR
  ******************************************************************************/
@@ -113,6 +115,7 @@ int ArduinoIoTCloudTCP::begin(ConnectionHandler & connection, bool const enable_
   _brokerAddress = brokerAddress;
   _brokerPort = brokerPort;
   _time_service.begin(&connection, &_tz_info);
+  ArduinoCloudPtr = this;
   return begin(enable_watchdog, _brokerAddress, _brokerPort);
 }
 
@@ -676,7 +679,7 @@ ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_Disconnect()
 
 void ArduinoIoTCloudTCP::onMessage(int length)
 {
-  ArduinoCloud.handleMessage(length);
+  ArduinoCloudPtr->handleMessage(length);
 }
 
 void ArduinoIoTCloudTCP::handleMessage(int length)
