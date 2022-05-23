@@ -74,6 +74,11 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     virtual int  connected     () override;
     virtual void printDebugInfo() override;
 
+#ifdef HAS_LORA
+    int begin(LoRaConnectionHandler& connection, bool retry = false);
+#endif
+
+#ifdef HAS_TCP
     #if defined(BOARD_HAS_ECCX08) || defined(BOARD_HAS_OFFLOADED_ECCX08) || defined(BOARD_HAS_SE050)
     int begin(ConnectionHandler & connection, bool const enable_watchdog = true, String brokerAddress = DEFAULT_BROKER_ADDRESS_SECURE_AUTH, uint16_t brokerPort = DEFAULT_BROKER_PORT_SECURE_AUTH);
     #else
@@ -89,6 +94,7 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     inline String   getBrokerAddress() const { return _brokerAddress; }
     inline uint16_t getBrokerPort   () const { return _brokerPort; }
 
+
 #if OTA_ENABLED
     /* The callback is triggered when the OTA is initiated and it gets executed until _ota_req flag is cleared.
      * It should return true when the OTA can be applied or false otherwise.
@@ -99,9 +105,11 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
       _ask_user_before_executing_ota = true;
     }
 #endif
+#endif /* HAS_TCP */
 
   private:
     static const int MQTT_TRANSMIT_BUFFER_SIZE = 256;
+    static const int CBOR_LORA_MSG_MAX_SIZE = 255;
 
     enum class State
     {
@@ -122,6 +130,8 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
 
     unsigned long _next_connection_attempt_tick;
     unsigned int _last_connection_attempt_cnt;
+
+#ifdef HAS_TCP
     unsigned long _next_device_subscribe_attempt_tick;
     unsigned int _last_device_subscribe_cnt;
     unsigned int _last_device_attach_cnt;
@@ -172,6 +182,13 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     bool _ask_user_before_executing_ota;
     onOTARequestCallbackFunc _get_ota_confirmation;
 #endif /* OTA_ENABLED */
+#endif /* HAS_TCP */
+
+#ifdef HAS_LORA
+    bool _retryEnable;
+    int _maxNumRetry;
+    long _intervalRetry;
+#endif
 
     inline String getTopic_deviceout() { return String("/a/d/" + getDeviceId() + "/e/o");}
     inline String getTopic_devicein () { return String("/a/d/" + getDeviceId() + "/e/i");}
@@ -199,6 +216,11 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     void sendDevicePropertiesToCloud();
     void requestLastValue();
     int write(String const topic, byte const data[], int const length);
+
+#ifdef HAS_LORA
+    void decodePropertiesFromCloud();
+    int writeProperties(const byte data[], int length);
+#endif
 
 #if OTA_ENABLED
     void onOTARequest();

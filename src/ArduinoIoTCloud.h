@@ -187,7 +187,8 @@ class ArduinoIoTCloudClass
   #include "ArduinoIoTCloudTCP.h"
 #endif
 #ifdef HAS_LORA
-  #include "ArduinoIoTCloudLPWAN.h"
+  //#include "ArduinoIoTCloudLPWAN.h"
+  #include "ArduinoIoTCloudTCP.h"
 #endif
 
 // declaration for boards without debug library
