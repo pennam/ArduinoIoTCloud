@@ -109,7 +109,6 @@
 #endif
 
 #if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ESP32)
-  #define BOARD_ESP
   #define BOARD_HAS_SECRET_KEY
   #define HAS_TCP
 #endif
