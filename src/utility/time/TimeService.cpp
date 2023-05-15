@@ -339,6 +339,7 @@ void TimeServiceClass::initRTC()
   esp8266_initRTC();
 #elif defined (ARDUINO_ARCH_RENESAS)
   renesas_initRTC();
+#elif defined (ARDUINO_RASPBERRY_PI_PICO_W)
 #else
   #error "RTC not available for this architecture"
 #endif
@@ -356,6 +357,7 @@ void TimeServiceClass::setRTC(unsigned long time)
   esp8266_setRTC(time);
 #elif defined (ARDUINO_ARCH_RENESAS)
   renesas_setRTC(time);
+#elif defined (ARDUINO_RASPBERRY_PI_PICO_W)
 #else
   #error "RTC not available for this architecture"
 #endif
@@ -373,6 +375,8 @@ unsigned long TimeServiceClass::getRTC()
   return esp8266_getRTC();
 #elif defined (ARDUINO_ARCH_RENESAS)
   return renesas_getRTC();
+#elif defined (ARDUINO_RASPBERRY_PI_PICO_W)
+  return 1;
 #else
   #error "RTC not available for this architecture"
 #endif

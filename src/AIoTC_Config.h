@@ -108,7 +108,7 @@
   #define HAS_LORA
 #endif
 
-#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ESP32)
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
   #define BOARD_HAS_SECRET_KEY
   #define HAS_TCP
 #endif
