@@ -648,7 +648,7 @@ void ArduinoIoTCloudTCP::handleMessage(int length)
   /* Topic for sync Thing last values on connect */
   if ((_shadowTopicIn == topic) && (_state == State::RequestLastValues))
   {
-    DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s [%d] last values received", __FUNCTION__, millis());
+    DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s [%d] last values received %d bytes", __FUNCTION__, millis(), length);
     CBORDecoder::decode(_thing_property_container, (uint8_t*)bytes, length, true);
     _time_service.setTimeZoneData(_tz_offset, _tz_dst_until);
     execCloudEventCallback(ArduinoIoTCloudEvent::SYNC);
