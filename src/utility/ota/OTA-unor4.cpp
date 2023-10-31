@@ -92,11 +92,11 @@ static int unor4_codeFlashClose(flash_lp_instance_ctrl_t * ctrl)
 
 int unor4_onOTARequest(char const * ota_url)
 {
-  OTAUpdate::Error ota_err = OTAUpdate::Error::None;
+  int ota_err = 0;
   OTAUpdate ota;
 
   /* Initialize the board for OTA handling. */
-  if ((ota_err = ota.begin("/update.bin")) != OTAUpdate::Error::None)
+  if ((ota_err = ota.begin("/update.bin")) != 0)
   {
     DEBUG_ERROR("OTAUpdate::begin() failed with %d", static_cast<int>(ota_err));
     return static_cast<int>(ota_err);
@@ -112,7 +112,7 @@ int unor4_onOTARequest(char const * ota_url)
   DEBUG_VERBOSE("OTAUpdate::download() %d bytes downloaded", static_cast<int>(ota_download));
 
   /* Verify update integrity */
-  if ((ota_err = ota.verify()) != OTAUpdate::Error::None)
+  if ((ota_err = ota.verify()) != 0)
   {
     DEBUG_ERROR("OTAUpdate::verify() failed with %d", static_cast<int>(ota_err));
     return static_cast<int>(ota_err);
@@ -122,7 +122,7 @@ int unor4_onOTARequest(char const * ota_url)
   unor4_setOTASize(ota_download);
 
   /* Flash new firmware */
-  if ((ota_err = ota.update("/update.bin")) != OTAUpdate::Error::None)
+  if ((ota_err = ota.update("/update.bin")) != 0)
   {
     DEBUG_ERROR("OTAUpdate::update() failed with %d", static_cast<int>(ota_err));
     return static_cast<int>(ota_err);
