@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include "lib/tinycbor/cbor-lib.h"
+#include "../cbor/lib/tinycbor/cbor-lib.h"
 
 /******************************************************************************
  * PUBLIC MEMBER FUNCTIONS

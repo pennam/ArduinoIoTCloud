@@ -48,7 +48,7 @@
 #endif
 
 #include <algorithm>
-#include "cbor/CBOREncoder.h"
+#include "property/CBOREncoder.h"
 #include "utility/watchdog/Watchdog.h"
 
 /******************************************************************************
