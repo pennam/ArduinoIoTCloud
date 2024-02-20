@@ -1,10 +1,10 @@
 //
-// This file is part of CBORDecoder
+// This file is part of PropertyDecoder
 //
 // Copyright 2019 ARDUINO SA (http://www.arduino.cc/)
 //
 // This software is released under the GNU General Public License version 3,
-// which covers the main part of CBORDecoder.
+// which covers the main part of PropertyDecoder.
 // The terms of this license can be found at:
 // https://www.gnu.org/licenses/gpl-3.0.en.html
 //
@@ -25,13 +25,13 @@
 #undef min
 #include <algorithm>
 
-#include "CBORDecoder.h"
+#include "PropertyDecoder.h"
 
 /******************************************************************************
    PUBLIC MEMBER FUNCTIONS
  ******************************************************************************/
 
-void CBORDecoder::decode(PropertyContainer & property_container, uint8_t const * const payload, size_t const length, bool isSyncMessage)
+void PropertyDecoder::decode(PropertyContainer & property_container, uint8_t const * const payload, size_t const length, bool isSyncMessage)
 {
   CborValue array_iter, map_iter,value_iter;
   CborParser parser;
@@ -79,7 +79,7 @@ void CBORDecoder::decode(PropertyContainer & property_container, uint8_t const *
    PRIVATE MEMBER FUNCTIONS
  ******************************************************************************/
 
-CBORDecoder::MapParserState CBORDecoder::handle_EnterMap(CborValue * map_iter, CborValue * value_iter) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_EnterMap(CborValue * map_iter, CborValue * value_iter) {
   MapParserState next_state = MapParserState::Error;
 
   if (cbor_value_get_type(map_iter) == CborMapType) {
@@ -91,7 +91,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_EnterMap(CborValue * map_iter, C
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_MapKey(CborValue * value_iter) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_MapKey(CborValue * value_iter) {
   MapParserState next_state = MapParserState::Error;
 
   if (cbor_value_at_end(value_iter)) {
@@ -130,7 +130,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_MapKey(CborValue * value_iter) {
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_UndefinedKey(CborValue * value_iter) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_UndefinedKey(CborValue * value_iter) {
   MapParserState next_state = MapParserState::Error;
 
   if (cbor_value_advance(value_iter) == CborNoError) {
@@ -140,7 +140,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_UndefinedKey(CborValue * value_i
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_BaseVersion(CborValue * value_iter, CborMapData & map_data) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_BaseVersion(CborValue * value_iter, CborMapData & map_data) {
   MapParserState next_state = MapParserState::Error;
 
   if (cbor_value_is_integer(value_iter)) {
@@ -157,7 +157,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_BaseVersion(CborValue * value_it
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_BaseName(CborValue * value_iter, CborMapData & map_data) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_BaseName(CborValue * value_iter, CborMapData & map_data) {
   MapParserState next_state = MapParserState::Error;
 
   if (cbor_value_is_text_string(value_iter)) {
@@ -173,7 +173,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_BaseName(CborValue * value_iter,
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_BaseTime(CborValue * value_iter, CborMapData & map_data) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_BaseTime(CborValue * value_iter, CborMapData & map_data) {
   MapParserState next_state = MapParserState::Error;
 
   double val = 0.0;
@@ -188,7 +188,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_BaseTime(CborValue * value_iter,
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_Name(CborValue * value_iter, CborMapData & map_data, PropertyContainer & property_container) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_Name(CborValue * value_iter, CborMapData & map_data, PropertyContainer & property_container) {
   MapParserState next_state = MapParserState::Error;
 
   if (cbor_value_is_text_string(value_iter)) {
@@ -230,7 +230,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_Name(CborValue * value_iter, Cbo
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_Value(CborValue * value_iter, CborMapData & map_data) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_Value(CborValue * value_iter, CborMapData & map_data) {
   MapParserState next_state = MapParserState::Error;
 
   double val = 0.0;
@@ -245,7 +245,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_Value(CborValue * value_iter, Cb
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_StringValue(CborValue * value_iter, CborMapData & map_data) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_StringValue(CborValue * value_iter, CborMapData & map_data) {
   MapParserState next_state = MapParserState::Error;
 
   if (cbor_value_is_text_string(value_iter)) {
@@ -261,7 +261,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_StringValue(CborValue * value_it
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_BooleanValue(CborValue * value_iter, CborMapData & map_data) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_BooleanValue(CborValue * value_iter, CborMapData & map_data) {
   MapParserState next_state = MapParserState::Error;
 
   bool val = false;
@@ -276,7 +276,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_BooleanValue(CborValue * value_i
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_Time(CborValue * value_iter, CborMapData & map_data) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_Time(CborValue * value_iter, CborMapData & map_data) {
   MapParserState next_state = MapParserState::Error;
 
   double val = 0.0;
@@ -291,7 +291,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_Time(CborValue * value_iter, Cbo
   return next_state;
 }
 
-CBORDecoder::MapParserState CBORDecoder::handle_LeaveMap(CborValue * map_iter, CborValue * value_iter, CborMapData & map_data, PropertyContainer & property_container, String & current_property_name, unsigned long & current_property_base_time, unsigned long & current_property_time, bool const is_sync_message, std::list<CborMapData> & map_data_list) {
+PropertyDecoder::MapParserState PropertyDecoder::handle_LeaveMap(CborValue * map_iter, CborValue * value_iter, CborMapData & map_data, PropertyContainer & property_container, String & current_property_name, unsigned long & current_property_base_time, unsigned long & current_property_time, bool const is_sync_message, std::list<CborMapData> & map_data_list) {
   MapParserState next_state = MapParserState::Error;
   if (map_data.name.isSet()) {
     String propertyName;
@@ -337,7 +337,7 @@ CBORDecoder::MapParserState CBORDecoder::handle_LeaveMap(CborValue * map_iter, C
   return next_state;
 }
 
-bool CBORDecoder::ifNumericConvertToDouble(CborValue * value_iter, double * numeric_val) {
+bool PropertyDecoder::ifNumericConvertToDouble(CborValue * value_iter, double * numeric_val) {
 
   if (cbor_value_is_integer(value_iter)) {
     int64_t val = 0;
@@ -369,7 +369,7 @@ bool CBORDecoder::ifNumericConvertToDouble(CborValue * value_iter, double * nume
 }
 
 /* Source Idea from https://tools.ietf.org/html/rfc7049 : Page: 50 */
-double CBORDecoder::convertCborHalfFloatToDouble(uint16_t const half_val) {
+double PropertyDecoder::convertCborHalfFloatToDouble(uint16_t const half_val) {
   int exp = (half_val >> 10) & 0x1f;
   int mant = half_val & 0x3ff;
   double val;

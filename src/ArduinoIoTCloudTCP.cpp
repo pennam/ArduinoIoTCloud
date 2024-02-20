@@ -48,7 +48,7 @@
 #endif
 
 #include <algorithm>
-#include "property/CBOREncoder.h"
+#include "property/PropertyEncoder.h"
 #include "utility/watchdog/Watchdog.h"
 
 /******************************************************************************
@@ -638,21 +638,21 @@ void ArduinoIoTCloudTCP::handleMessage(int length)
 
   /* Topic for OTA properties and device configuration */
   if (_deviceTopicIn == topic) {
-    CBORDecoder::decode(_device_property_container, (uint8_t*)bytes, length);
+    PropertyDecoder::decode(_device_property_container, (uint8_t*)bytes, length);
     _last_device_subscribe_cnt = 0;
     _next_device_subscribe_attempt_tick = 0;
   }
 
   /* Topic for user input data */
   if (_dataTopicIn == topic) {
-    CBORDecoder::decode(_thing_property_container, (uint8_t*)bytes, length);
+    PropertyDecoder::decode(_thing_property_container, (uint8_t*)bytes, length);
   }
 
   /* Topic for sync Thing last values on connect */
   if ((_shadowTopicIn == topic) && (_state == State::RequestLastValues))
   {
     DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s [%d] last values received", __FUNCTION__, millis());
-    CBORDecoder::decode(_thing_property_container, (uint8_t*)bytes, length, true);
+    PropertyDecoder::decode(_thing_property_container, (uint8_t*)bytes, length, true);
     _time_service.setTimeZoneData(_tz_offset, _tz_dst_until);
     execCloudEventCallback(ArduinoIoTCloudEvent::SYNC);
     _last_sync_request_cnt = 0;
@@ -666,7 +666,7 @@ void ArduinoIoTCloudTCP::sendPropertyContainerToCloud(String const topic, Proper
   int bytes_encoded = 0;
   uint8_t data[MQTT_TRANSMIT_BUFFER_SIZE];
 
-  if (CBOREncoder::encode(property_container, data, sizeof(data), bytes_encoded, current_property_index, false) == CborNoError)
+  if (PropertyEncoder::encode(property_container, data, sizeof(data), bytes_encoded, current_property_index, false) == CborNoError)
     if (bytes_encoded > 0)
     {
       /* If properties have been encoded store them in the back-up buffer

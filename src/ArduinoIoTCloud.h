@@ -32,7 +32,7 @@
 
 #include "AIoTC_Const.h"
 
-#include "property/CBORDecoder.h"
+#include "property/PropertyDecoder.h"
 
 #include "property/Property.h"
 #include "property/PropertyContainer.h"

@@ -1,10 +1,10 @@
 /*
-   This file is part of ArduinoIoTCloud.
+   This file is part of PropertyEncoder.
 
    Copyright 2020 ARDUINO SA (http://www.arduino.cc/)
 
    This software is released under the GNU General Public License version 3,
-   which covers the main part of arduino-cli.
+   which covers the main part of PropertyEncoder.
    The terms of this license can be found at:
    https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -19,7 +19,7 @@
  * INCLUDE
  ******************************************************************************/
 
-#include "CBOREncoder.h"
+#include "PropertyEncoder.h"
 
 #undef max
 #undef min
@@ -32,7 +32,7 @@
  * PUBLIC MEMBER FUNCTIONS
  ******************************************************************************/
 
-CborError CBOREncoder::encode(PropertyContainer & property_container, uint8_t * data, size_t const size, int & bytes_encoded, unsigned int & current_property_index, bool lightPayload)
+CborError PropertyEncoder::encode(PropertyContainer & property_container, uint8_t * data, size_t const size, int & bytes_encoded, unsigned int & current_property_index, bool lightPayload)
 {
   EncoderState current_state = EncoderState::InitPropertyEncoder,
                next_state = EncoderState::InitPropertyEncoder;
@@ -70,7 +70,7 @@ CborError CBOREncoder::encode(PropertyContainer & property_container, uint8_t * 
    PRIVATE MEMBER FUNCTIONS
  ******************************************************************************/
 
-CBOREncoder::EncoderState CBOREncoder::handle_InitPropertyEncoder(PropertyContainerEncoder & propertyEncoder)
+PropertyEncoder::EncoderState PropertyEncoder::handle_InitPropertyEncoder(PropertyContainerEncoder & propertyEncoder)
 {
   propertyEncoder.encoded_property_count = 0;
   propertyEncoder.checked_property_count = 0;
@@ -79,7 +79,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_InitPropertyEncoder(PropertyContai
   return EncoderState::OpenCBORContainer;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_OpenCBORContainer(PropertyContainerEncoder & propertyEncoder, uint8_t * data, size_t const size)
+PropertyEncoder::EncoderState PropertyEncoder::handle_OpenCBORContainer(PropertyContainerEncoder & propertyEncoder, uint8_t * data, size_t const size)
 {
   propertyEncoder.encoded_property_count = 0;
   propertyEncoder.checked_property_count = 0;
@@ -88,7 +88,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_OpenCBORContainer(PropertyContaine
   return EncoderState::TryAppend;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_TryAppend(PropertyContainerEncoder & propertyEncoder, bool  & lightPayload)
+PropertyEncoder::EncoderState PropertyEncoder::handle_TryAppend(PropertyContainerEncoder & propertyEncoder, bool  & lightPayload)
 {
   /* Check if backing storage and cloud has diverged. Time interval may be elapsed or property may be changed
    * and if that's the case encode the property into the CBOR.
@@ -127,7 +127,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_TryAppend(PropertyContainerEncoder
     return EncoderState::Error;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_OutOfMemory(PropertyContainerEncoder & propertyEncoder)
+PropertyEncoder::EncoderState PropertyEncoder::handle_OutOfMemory(PropertyContainerEncoder & propertyEncoder)
 {
   if(propertyEncoder.encoded_property_count > 0)
     return EncoderState::CloseCBORContainer;
@@ -135,7 +135,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_OutOfMemory(PropertyContainerEncod
     return EncoderState::SkipProperty;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_SkipProperty(PropertyContainerEncoder & propertyEncoder)
+PropertyEncoder::EncoderState PropertyEncoder::handle_SkipProperty(PropertyContainerEncoder & propertyEncoder)
 {
   /* Better to skip this property otherwise we will stay blocked here. This happens only with a message property 
    * that doesn't fit into the CBOR buffer
@@ -146,7 +146,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_SkipProperty(PropertyContainerEnco
   return EncoderState::Error;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_TrimAppend(PropertyContainerEncoder & propertyEncoder)
+PropertyEncoder::EncoderState PropertyEncoder::handle_TrimAppend(PropertyContainerEncoder & propertyEncoder)
 {
   /* Trim the number of properties to be included in the next message to avoid multivalue property split */
   propertyEncoder.encoded_property_limit = propertyEncoder.encoded_property_count;
@@ -157,7 +157,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_TrimAppend(PropertyContainerEncode
     return EncoderState::Error;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_CloseCBORContainer(PropertyContainerEncoder & propertyEncoder)
+PropertyEncoder::EncoderState PropertyEncoder::handle_CloseCBORContainer(PropertyContainerEncoder & propertyEncoder)
 {
   CborError error = cbor_encoder_close_container(&propertyEncoder.encoder, &propertyEncoder.arrayEncoder);
   if (CborNoError != error)
@@ -166,7 +166,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_CloseCBORContainer(PropertyContain
     return EncoderState::FinishAppend;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_TrimClose(PropertyContainerEncoder & propertyEncoder)
+PropertyEncoder::EncoderState PropertyEncoder::handle_TrimClose(PropertyContainerEncoder & propertyEncoder)
 {
   /* Trim the number of properties to be included in the next message to avoid error closing container */
   propertyEncoder.encoded_property_limit = propertyEncoder.encoded_property_count - 1;
@@ -177,7 +177,7 @@ CBOREncoder::EncoderState CBOREncoder::handle_TrimClose(PropertyContainerEncoder
     return EncoderState::Error;
 }
 
-CBOREncoder::EncoderState CBOREncoder::handle_FinishAppend(PropertyContainerEncoder & propertyEncoder)
+PropertyEncoder::EncoderState PropertyEncoder::handle_FinishAppend(PropertyContainerEncoder & propertyEncoder)
 {
   /* Restore property message limit to CBOR_ENCODER_NO_PROPERTIES_LIMIT */
   propertyEncoder.property_limit_active = false;

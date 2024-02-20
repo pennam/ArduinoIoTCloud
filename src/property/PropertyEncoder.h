@@ -1,10 +1,10 @@
 /*
-   This file is part of ArduinoIoTCloud.
+   This file is part of PropertyEncoder.
 
    Copyright 2020 ARDUINO SA (http://www.arduino.cc/)
 
    This software is released under the GNU General Public License version 3,
-   which covers the main part of arduino-cli.
+   which covers the main part of PropertyEncoder.
    The terms of this license can be found at:
    https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -15,8 +15,8 @@
    a commercial license, send an email to license@arduino.cc.
 */
 
-#ifndef ARDUINO_CBOR_CBOR_ENCODER_H_
-#define ARDUINO_CBOR_CBOR_ENCODER_H_
+#ifndef ARDUINO_CBOR_PROPERTY_ENCODER_H_
+#define ARDUINO_CBOR_PROPERTY_ENCODER_H_
 
 /******************************************************************************
  * INCLUDE
@@ -34,7 +34,7 @@
  * CLASS DECLARATION
  ******************************************************************************/
 
-class CBOREncoder
+class PropertyEncoder
 {
 
 public:
@@ -44,8 +44,8 @@ public:
 
 private:
 
-  CBOREncoder() { }
-  CBOREncoder(CborEncoder const &) { }
+  PropertyEncoder() { }
+  PropertyEncoder(CborEncoder const &) { }
 
   enum class EncoderState
   {
@@ -88,4 +88,4 @@ private:
 
 };
 
-#endif /* ARDUINO_CBOR_CBOR_ENCODER_H_ */
+#endif /* ARDUINO_CBOR_PROPERTY_ENCODER_H_ */

@@ -15,8 +15,8 @@
 // a commercial license, send an email to license@arduino.cc.
 //
 
-#ifndef ARDUINO_CBOR_CBOR_DECODER_H_
-#define ARDUINO_CBOR_CBOR_DECODER_H_
+#ifndef ARDUINO_CBOR_PROPERTY_DECODER_H_
+#define ARDUINO_CBOR_PROPERTY_DECODER_H_
 
 /******************************************************************************
    INCLUDE
@@ -34,7 +34,7 @@
    CLASS DECLARATION
  ******************************************************************************/
 
-class CBORDecoder
+class PropertyDecoder
 {
 
 public:
@@ -45,8 +45,8 @@ public:
 
 private:
 
-  CBORDecoder() { }
-  CBORDecoder(CBORDecoder const &) { }
+  PropertyDecoder() { }
+  PropertyDecoder(PropertyDecoder const &) { }
 
   enum class MapParserState {
     EnterMap,
@@ -83,4 +83,4 @@ private:
 
 };
 
-#endif /* ARDUINO_CBOR_CBOR_DECODER_H_ */
+#endif /* ARDUINO_CBOR_PROPERTY_DECODER_H_ */
