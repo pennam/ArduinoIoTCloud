@@ -50,6 +50,9 @@
 #include <algorithm>
 #include "cbor/CBOREncoder.h"
 #include "utility/watchdog/Watchdog.h"
+#include "cbor/MessageDecoder.h"
+#include "cbor/MessageEncoder.h"
+#include <typeinfo> 
 
 /******************************************************************************
    LOCAL MODULE FUNCTIONS
@@ -300,6 +303,59 @@ void ArduinoIoTCloudTCP::printDebugInfo()
   DEBUG_INFO("***** Arduino IoT Cloud - configuration info *****");
   DEBUG_INFO("Device ID: %s", getDeviceId().c_str());
   DEBUG_INFO("MQTT Broker: %s:%d", _brokerAddress.c_str(), _brokerPort);
+}
+
+void ArduinoIoTCloudTCP::decode(){
+  GenericCommand * msg = new GenericCommand();
+
+  uint8_t const payloadl[] = {0xDA, 0x00, 0x01, 0x06, 0x00, 0x81, 0x4D, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12};
+
+  int payload_length = sizeof(payloadl) / sizeof(uint8_t);
+  MessageDecoder::decode((Message*) msg, payloadl, payload_length);
+
+  ThingGetLastValueCmdDown * lastValueCommand = (ThingGetLastValueCmdDown*) msg;
+  
+  DEBUG_INFO(">LV is %s", lastValueCommand->fields.params.last_values[10]);
+
+  delete msg;
+  msg = new GenericCommand();
+
+  uint8_t const payload[] = {0xDA, 0x00, 0x01, 0x01, 0x00, 0x84, 0x6C, 0x6F, 0x74, 0x61, 0x2D, 0x69, 0x64, 0x2D, 0x31, 0x32, 0x33, 0x34, 0x35, 0x75, 0x38, 0x37, 0x36, 0x31, 0x32, 0x33, 0x38, 0x37, 0x36, 0x31, 0x32, 0x33, 0x38, 0x37, 0x36, 0x31, 0x32, 0x33, 0x31, 0x32, 0x33, 0x53, 0x33, 0x30, 0x30, 0x34, 0x61, 0x61, 0x62, 0x32, 0x37, 0x35, 0x31, 0x31, 0x64, 0x62, 0x33, 0x32, 0x31, 0x32, 0x64, 0x50, 0x6A, 0x6B, 0x61, 0x73, 0x64, 0x6B, 0x6A, 0x68, 0x61, 0x73, 0x64, 0x6B, 0x6A, 0x68, 0x78, 0x68};
+  
+  payload_length = sizeof(payload) / sizeof(uint8_t);
+  MessageDecoder::DecoderState err1 = MessageDecoder::decode((Message*) msg, payload, payload_length);
+
+  DEBUG_INFO(">Message OTA id is %d", msg->command);
+
+  OtaUpdateCmdDown * otaCommand = (OtaUpdateCmdDown*) msg;
+  DEBUG_INFO(">URL is %s", otaCommand->fields.params.url);
+  DEBUG_INFO(">ID is %s", otaCommand->fields.params.id);
+  DEBUG_INFO(">Command status %d", static_cast<int>(err1));
+
+  delete msg;
+}
+
+void ArduinoIoTCloudTCP::encode(){
+  OtaBeginUp * command = new OtaBeginUp();
+  Message * msg = (Message*) command;
+  msg->id = CommandID::OtaBeginUpId;
+  uint8_t sha[SHA256_SIZE] = {0x01, 0x02, 0x03, 0x04};
+  memcpy(command->fields.params.sha, sha, SHA256_SIZE);
+
+  int bytes_encoded = 0;
+  uint8_t data[1024];
+  if (MessageEncoder::encode(msg, data, sizeof(data), bytes_encoded) == CborNoError)
+    if (bytes_encoded > 0)
+    {
+      DEBUG_INFO("Data size is %d", sizeof(data));
+      for (int i = 0; i < 50; i++) {
+        DEBUG_INFO("%02X", data[i]);
+      }
+    } else {
+      DEBUG_INFO("No data sent");
+    }
+
+  delete command;
 }
 
 /******************************************************************************
