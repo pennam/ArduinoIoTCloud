@@ -23,6 +23,7 @@
  ******************************************************************************/
 
 #include <interfaces/CloudProcess.h>
+#include <utility/time/TimedAttempt.h>
 
 /******************************************************************************
  * CLASS DECLARATION
@@ -36,15 +37,35 @@ class ArduinoCloudThing: public CloudProcess
     virtual void update() override;
     virtual void handleMessage(Message* m) override;
 
+    virtual void begin();
+    virtual int  connected();
+
+    /* Check if we can return const values */
+    inline PropertyContainer &getPropertyContainer() { return _thing_property_container; };
+    inline unsigned int &getPropertyContainerIndex() { return _last_checked_property_index; }
+
+
   private:
 
     enum class State
     {
-      SubscribeThingTopics,
-      RequestLastValues,
-      Connected,
-      Disconnect,
+      RequestLastValues, //Init
+      Connected,         //Connected
+      Disconnect,        //Error
     };
+
+    State _state;
+    TimedAttempt _connection_attempt;
+    PropertyContainer _thing_property_container;
+    unsigned int _last_checked_property_index;
+    int _tz_offset;
+    Property * _tz_offset_property;
+    unsigned int _tz_dst_until;
+    Property * _tz_dst_until_property;
+
+    State handle_RequestLastValues();
+    State handle_Connected();
+    State handle_Disconnect();
 };
 
 #endif /* ARDUINO_IOT_CLOUD_THING_H */

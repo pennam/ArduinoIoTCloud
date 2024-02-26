@@ -26,7 +26,6 @@
 #include <ArduinoIoTCloud.h>
 #include <ArduinoMqttClient.h>
 #include <ArduinoIoTCloudThing.h>
-#include <utility/time/TimedAttempt.h>
 
 #if defined(BOARD_HAS_SECURE_ELEMENT)
   #include <Arduino_SecureElement.h>
@@ -76,7 +75,6 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
              ArduinoIoTCloudTCP();
     virtual ~ArduinoIoTCloudTCP() { }
 
-
     virtual void update        () override;
     virtual int  connected     () override;
     virtual void printDebugInfo() override;
@@ -92,7 +90,7 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     inline String   getBrokerAddress() const { return _brokerAddress; }
     inline uint16_t getBrokerPort   () const { return _brokerPort; }
 
-    inline PropertyContainer &getThingPropertyContainer() { return _thing_property_container; }
+    inline PropertyContainer &getThingPropertyContainer() { return _thing.getPropertyContainer(); }
 
 #if OTA_ENABLED
     /* The callback is triggered when the OTA is initiated and it gets executed until _ota_req flag is cleared.
@@ -127,14 +125,11 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     State _state;
     TimedAttempt _connection_attempt;
     PropertyContainer _device_property_container;
-    PropertyContainer _thing_property_container;
-    unsigned int _last_checked_property_index;
     ArduinoCloudThing _thing;
 
-    int _tz_offset;
-    Property * _tz_offset_property;
-    unsigned int _tz_dst_until;
-    Property * _tz_dst_until_property;
+    String _device_id;
+    String _thing_id;
+    Property * _thing_id_property;
 
     String _brokerAddress;
     uint16_t _brokerPort;
