@@ -68,7 +68,7 @@ void ArduinoCloudThing::update()
 
 int ArduinoCloudThing::connected()
 {
-
+  return _state == State::Connected ? 1 : 0;
 }
 
 void ArduinoCloudThing::handleMessage(Message* m)
