@@ -129,6 +129,7 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     PropertyContainer _device_property_container;
     PropertyContainer _thing_property_container;
     unsigned int _last_checked_property_index;
+    ArduinoCloudThing _thing;
 
     int _tz_offset;
     Property * _tz_offset_property;
