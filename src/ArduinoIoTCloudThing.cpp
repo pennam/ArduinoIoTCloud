@@ -25,6 +25,12 @@
 
 #include <ArduinoIoTCloudTCP.h>
 
+ArduinoCloudThing::ArduinoCloudThing(MessageStream *ms)
+: CloudProcess(ms)
+{
+
+}
+
 void ArduinoCloudThing::update() {}
 void ArduinoCloudThing::handleMessage(Message* m) {}
 

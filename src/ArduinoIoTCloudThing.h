@@ -32,6 +32,7 @@ class ArduinoCloudThing: public CloudProcess
 {
   public:
 
+    ArduinoCloudThing(MessageStream* stream);
     virtual void update() override;
     virtual void handleMessage(Message* m) override;
 
