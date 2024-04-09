@@ -83,6 +83,8 @@ ArduinoIoTCloudTCP::ArduinoIoTCloudTCP()
 , _shadowTopicIn("")
 , _dataTopicOut("")
 , _dataTopicIn("")
+, _message_stream(std::bind(&ArduinoIoTCloudTCP::sendMessage, this, std::placeholders::_1))
+, _thing(&_message_stream)
 #if OTA_ENABLED
 , _ota_cap{false}
 , _ota_error{static_cast<int>(OTAError::None)}
@@ -650,6 +652,10 @@ void ArduinoIoTCloudTCP::handleMessage(int length)
     execCloudEventCallback(ArduinoIoTCloudEvent::SYNC);
     _state = State::Connected;
   }
+}
+
+void ArduinoIoTCloudTCP::sendMessage(Message * msg)
+{
 }
 
 void ArduinoIoTCloudTCP::sendPropertyContainerToCloud(String const topic, PropertyContainer & property_container, unsigned int & current_property_index)

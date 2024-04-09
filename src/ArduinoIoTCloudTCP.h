@@ -178,6 +178,8 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     String _dataTopicOut;
     String _dataTopicIn;
 
+    MessageStream _message_stream;
+
 #if OTA_ENABLED
     bool _ota_cap;
     int _ota_error;
@@ -208,6 +210,7 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
 
     static void onMessage(int length);
     void handleMessage(int length);
+    void sendMessage(Message * msg);
     void sendPropertyContainerToCloud(String const topic, PropertyContainer & property_container, unsigned int & current_property_index);
     void sendThingPropertiesToCloud();
     void sendDevicePropertiesToCloud();
