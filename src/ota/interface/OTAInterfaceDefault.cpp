@@ -187,7 +187,7 @@ void OTADefaultCloudProcessInterface::parseOta(uint8_t* buffer, size_t buf_len) 
         DEBUG_VERBOSE("OTA Download Progress %d/%d", context->downloadedSize, http_client->contentLength());
 
         // FIXME the following line enables the report for download progress, it breaks
-        // reportStatus(context->downloadedSize);
+        reportStatus(( (context->downloadedSize ) * 100 ) / http_client->contentLength()) ;
         context->lastReportTime = millis();
       }
 
