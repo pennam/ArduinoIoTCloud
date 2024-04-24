@@ -90,8 +90,11 @@ OTACloudProcessInterface::State OTADefaultCloudProcessInterface::startOTA() {
 
 OTACloudProcessInterface::State OTADefaultCloudProcessInterface::fetch() {
   OTACloudProcessInterface::State res = Fetch;
-  int http_res = 0;
+  int http_res;
+  context->fetchTime = millis();
 
+restart:
+  http_res = 0;
   if(http_client->available() == 0) {
     goto exit;
   }
@@ -133,6 +136,8 @@ exit:
     http_client->stop(); // close the connection
     delete http_client;
     http_client = nullptr;
+  } else if (millis() - context->fetchTime < context->maxFetchTime) {
+    goto restart;
   }
   return res;
 }

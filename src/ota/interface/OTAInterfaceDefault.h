@@ -70,12 +70,14 @@ protected:
     uint32_t          headerCopiedBytes;
     uint32_t          downloadedSize;
     uint32_t          lastReportTime;
+    uint32_t          fetchTime;
+    const uint32_t    maxFetchTime = 200;
 
     // LZSS decoder
     LZSSDecoder       decoder;
 
-    const size_t buf_len = 256;
-    uint8_t buffer[256];
+    const size_t buf_len = 1024;
+    uint8_t buffer[1024];
   } *context;
 };
 
