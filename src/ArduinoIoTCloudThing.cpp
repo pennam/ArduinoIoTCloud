@@ -76,6 +76,14 @@ void ArduinoCloudThing::update() {
         nextState = State::Connected;
       }
       break;
+    
+    /* We have received a timezone update */
+    case TimezoneCommandDownId:
+    {
+      TimezoneCommandDown * cmd = (TimezoneCommandDown *)_command;
+      TimeService.setTimeZoneData(cmd->params.offset, cmd->params.until);
+    }
+    break;
 
     /* We have received a reset command */
     case ResetCmdId:
