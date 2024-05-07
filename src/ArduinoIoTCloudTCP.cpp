@@ -349,7 +349,6 @@ ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_Disconnect()
   _thing.handleMessage(&message);
   _device.handleMessage(&message);
 
-  _thing_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
   DEBUG_INFO("Disconnected from Arduino IoT Cloud");
   execCloudEventCallback(ArduinoIoTCloudEvent::DISCONNECT);
 
@@ -392,24 +391,21 @@ void ArduinoIoTCloudTCP::handleMessage(int length)
         case CommandId::ThingUpdateCmdId:
         {
           DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s [%d] device configuration received", __FUNCTION__, millis());
-          if ( _thing_id != String(command.thingUpdateCmd.params.thing_id)) {
-            _thing_id = String(command.thingUpdateCmd.params.thing_id);
+          String new_thing_id = String(command.thingUpdateCmd.params.thing_id);
+
+          if (!new_thing_id.length()) {
+            /* Send message to device state machine to inform we have received a null thing-id */
+            _thing_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
             Message message;
-            /* If we are attached we need first to detach */
-            if (_device.isAttached()) {
-              detachThing();
-              message = { DeviceDetachedCmdId };
-            }
-            /* If received thing id is valid attach to the new thing */
-            if (_thing_id.length()) {
-              attachThing();
-              message = { DeviceAttachedCmdId };
-            } else {
-              /* Send message to device state machine to inform we have received a null thing-id */
-              _thing_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-              message = { DeviceRegisteredCmdId };
-            }
+            message = { DeviceRegisteredCmdId };
             _device.handleMessage(&message);
+          } else {
+            if (_device.isAttached() && _thing_id != new_thing_id) {
+              detachThing();
+            }
+            if (!_device.isAttached()) {
+              attachThing(new_thing_id);
+            }
           }
         }
         break;
@@ -492,8 +488,9 @@ void ArduinoIoTCloudTCP::sendPropertyContainerToCloud(String const topic, Proper
   }
 }
 
-void ArduinoIoTCloudTCP::attachThing()
+void ArduinoIoTCloudTCP::attachThing(String thingId)
 {
+  _thing_id = thingId;
 
   _dataTopicIn    = getTopic_datain();
   _dataTopicOut   = getTopic_dataout();
