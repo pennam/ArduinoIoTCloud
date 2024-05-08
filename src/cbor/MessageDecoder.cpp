@@ -127,6 +127,13 @@ CBORMessageDecoder::ArrayParserState CBORMessageDecoder::decodeThingUpdateCmd(Cb
     return ArrayParserState::Error;
   }
 
+  size_t thingIdLen = strlen(thingCommand->params.thing_id);
+
+  // thing_id length normally is 36, or 0 in case of device not attached to any thing
+  if (!((thingIdLen == sizeof(thingCommand->params.thing_id) -1) || (thingIdLen == 0))) {
+    return ArrayParserState::Error;
+  }
+
   return ArrayParserState::LeaveArray;
 }
 
