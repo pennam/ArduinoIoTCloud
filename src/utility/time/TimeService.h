@@ -23,7 +23,7 @@
  **************************************************************************************/
 
 #include <AIoTC_Config.h>
-#include <Arduino_ConnectionHandler.h>
+#include <Arduino_ConnectionHandlerInterface.h>
 
 /******************************************************************************
  * TYPEDEF
