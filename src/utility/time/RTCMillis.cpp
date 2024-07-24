@@ -19,6 +19,8 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <AIoTC_Config.h>
+
 #if defined(USE_NOTECARD) || defined(ARDUINO_ARCH_ESP8266)
 
 #include <Arduino.h>

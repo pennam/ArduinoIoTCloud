@@ -18,6 +18,8 @@
 #ifndef ARDUINO_IOT_CLOUD_RTC_MILLIS_H_
 #define ARDUINO_IOT_CLOUD_RTC_MILLIS_H_
 
+#include <AIoTC_Config.h>
+
 #if defined(USE_NOTECARD) || defined(ARDUINO_ARCH_ESP8266)
 
 /**************************************************************************************
