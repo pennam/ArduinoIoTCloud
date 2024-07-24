@@ -25,6 +25,7 @@
 #include "ArduinoIoTCloud.h"
 #include "ArduinoIoTCloudThing.h"
 #include "ArduinoIoTCloudDevice.h"
+#include <Arduino_NotecardConnectionHandler.h>
 
 /******************************************************************************
  * DEFINES

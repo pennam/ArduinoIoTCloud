@@ -28,8 +28,6 @@
 #include <algorithm>
 #include <functional>
 
-#include <Arduino_NotecardConnectionHandler.h>
-
 #include "cbor/CBOREncoder.h"
 #include "cbor/MessageDecoder.h"
 #include "cbor/MessageEncoder.h"
