@@ -49,6 +49,17 @@
 #endif
 
 /******************************************************************************
+ * AUTOMATICALLY CONFIGURED DEFINES FROM EXTERNAL LIBRARIES
+ ******************************************************************************/
+
+#if defined __has_include
+  #if __has_include (<Arduino_NotecardConnectionHandler.h>)
+    #define USE_NOTECARD
+    #define BOARD_HAS_SECRET_KEY
+  #endif
+#endif
+
+/******************************************************************************
  * AUTOMATICALLY CONFIGURED DEFINES
  ******************************************************************************/
 
