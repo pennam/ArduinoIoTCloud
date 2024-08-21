@@ -55,7 +55,7 @@ OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::startOTA() {
 
   flash.erase((uint32_t)appStartAddress() + 0xF00000, 0x100000);
 
-  fs = new mbed::FATFileSystem(SD_MOUNT_PATH); // FIXME can this be allocated in the stack?
+  fs = new mbed::FATFileSystem(SD_MOUNT_PATH);
   if ((err = fs->reformat(&flash)) != 0) {
     DEBUG_VERBOSE("NANO_RP2040OTA::%s Filesystem reformat error: %d", __FUNCTION__, err);
     return ErrorReformatFail;
