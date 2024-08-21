@@ -12,16 +12,11 @@
 
 #if defined(ARDUINO_UNOR4_WIFI) && OTA_ENABLED
 #include "OTAUnoR4.h"
-
 #include <Arduino_DebugUtils.h>
 #include "tls/utility/SHA256.h"
 #include "fsp_common_api.h"
 #include "r_flash_lp.h"
 #include "WiFi.h"
-
-/******************************************************************************
- * DEFINES
- ******************************************************************************/
 
 const char UNOR4OTACloudProcess::UPDATE_FILE_NAME[] = "/update.bin";
 
@@ -39,7 +34,7 @@ OTACloudProcessInterface::State UNOR4OTACloudProcess::resume(Message* msg) {
 OTACloudProcessInterface::State UNOR4OTACloudProcess::startOTA() {
   int ota_err = OTAUpdate::OTA_ERROR_NONE;
 
-  // Open fs for ota
+  /* Open filesystem for OTA */
   if((ota_err = ota.begin(UPDATE_FILE_NAME)) != OTAUpdate::OTA_ERROR_NONE) {
     DEBUG_VERBOSE("OTAUpdate::begin() failed with %d", ota_err);
     return convertUnor4ErrorToState(ota_err);

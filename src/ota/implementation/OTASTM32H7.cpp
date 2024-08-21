@@ -9,6 +9,7 @@
 */
 
 #include "AIoTC_Config.h"
+
 #if defined(BOARD_STM32H7) && OTA_ENABLED
 #include "OTASTM32H7.h"
 #include <STM32H747_System.h>
@@ -24,7 +25,7 @@ STM32H7OTACloudProcess::STM32H7OTACloudProcess(MessageStream *ms, Client* client
 }
 
 STM32H7OTACloudProcess::~STM32H7OTACloudProcess() {
-  if(decompressed != nullptr) {
+  if (decompressed != nullptr) {
     fclose(decompressed);
     decompressed = nullptr;
   }
@@ -62,13 +63,12 @@ OTACloudProcessInterface::State STM32H7OTACloudProcess::startOTA() {
 
   decompressed = fopen(_filename.c_str(), "wb");
 
-  if(decompressed == nullptr) {
+  if (decompressed == nullptr) {
     return ErrorOpenUpdateFileFail;
   }
   // start the download if the setup for ota storage is successful
   return OTADefaultCloudProcessInterface::startOTA();
 }
-
 
 OTACloudProcessInterface::State STM32H7OTACloudProcess::flashOTA() {
   fclose(decompressed);
@@ -77,13 +77,13 @@ OTACloudProcessInterface::State STM32H7OTACloudProcess::flashOTA() {
   uint32_t updateLength = 0;
 
   /* Schedule the firmware update. */
-  if(!findProgramLength(updateLength)) {
+  if (!findProgramLength(updateLength)) {
     return OtaStorageOpenFail;
   }
 
   storageClean();
 
-  // this sets the registries in RTC to load the firmware from the storage selected at the next reboot
+  /* This sets the registries in RTC to load the firmware from the storage selected at the next reboot */
   STM32H747::writeBackupRegister(RTCBackup::DR0, STM32H747OTA::MAGIC);
   STM32H747::writeBackupRegister(RTCBackup::DR1, STM32H747OTA::STORAGE_TYPE);
   STM32H747::writeBackupRegister(RTCBackup::DR2, STM32H747OTA::PARTITION);
@@ -93,12 +93,12 @@ OTACloudProcessInterface::State STM32H7OTACloudProcess::flashOTA() {
 }
 
 OTACloudProcessInterface::State STM32H7OTACloudProcess::reboot() {
-  // TODO save information about the progress reached in the ota
+  /* TODO save information about the progress reached in the ota */
 
-  // This command reboots the mcu
   NVIC_SystemReset();
 
-  return Resume; // This won't ever be reached
+  /* This won't ever be reached */
+  return Resume;
 }
 
 void STM32H7OTACloudProcess::reset() {
@@ -112,20 +112,20 @@ void STM32H7OTACloudProcess::reset() {
 void STM32H7OTACloudProcess::storageClean() {
   DEBUG_VERBOSE(F("storage clean"));
 
-  if(decompressed != nullptr) {
+  if (decompressed != nullptr) {
     int res = fclose(decompressed);
     DEBUG_VERBOSE("error on fclose %d", res);
 
     decompressed = nullptr;
   }
 
-  if(_fs != nullptr) {
+  if (_fs != nullptr) {
     _fs->unmount();
     delete _fs;
     _fs = nullptr;
   }
 
-  if(_bd != nullptr) {
+  if (_bd != nullptr) {
     delete _bd;
     _bd = nullptr;
   }
@@ -136,16 +136,17 @@ bool STM32H7OTACloudProcess::isOtaCapable() {
   uint32_t bootloader_data_offset = 0x1F000;
   uint8_t* bootloader_data = (uint8_t*)(BOOTLOADER_ADDR + bootloader_data_offset);
   uint8_t currentBootloaderVersion = bootloader_data[1];
-  if (currentBootloaderVersion < 22)
+  if (currentBootloaderVersion < 22) {
     return false;
-  else
+  } else {
     return true;
+  }
 }
 
 bool STM32H7OTACloudProcess::storageInit() {
   int err_mount=1;
 
-  if(_bd_raw_qspi == nullptr) {
+  if (_bd_raw_qspi == nullptr) {
     _bd_raw_qspi = mbed::BlockDevice::get_default_instance();
 
     if (_bd_raw_qspi->init() != QSPIF_BD_ERROR_OK) {
@@ -198,6 +199,5 @@ void* STM32H7OTACloudProcess::appStartAddress() {
 uint32_t STM32H7OTACloudProcess::appSize() {
   return ((&__etext - (uint32_t*)appStartAddress()) + (&_edata - &_sdata))*sizeof(void*);
 }
-
 
 #endif // defined(BOARD_STM32H7) && OTA_ENABLED

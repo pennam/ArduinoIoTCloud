@@ -18,26 +18,27 @@ public:
   SAMDOTACloudProcess(MessageStream *ms);
 
   virtual bool isOtaCapable() override;
+
 protected:
   virtual OTACloudProcessInterface::State resume(Message* msg=nullptr) override;
 
-  // we are overriding the method of startOTA in order to download ota file on ESP32
+  /* we are overriding the method of startOTA in order to download ota file on ESP32 */
   virtual OTACloudProcessInterface::State startOTA() override;
 
-  // we start the download and decompress process
+  /* we start the download and decompress process */
   virtual OTACloudProcessInterface::State fetch() override;
 
-  // whene the download is correctly finished we set the mcu to use the newly downloaded binary
+  /* whene the download is correctly finished we set the mcu to use the newly downloaded binary */
   virtual OTACloudProcessInterface::State flashOTA();
 
-  // we reboot the device
+  /* we reboot the device */
   virtual OTACloudProcessInterface::State reboot();
 
   virtual void reset() override;
 
+  /* SHA256 functions */
   void* appStartAddress();
   uint32_t appSize();
-
   bool appFlashOpen()  { return true; }
   bool appFlashClose() { return true; }
 

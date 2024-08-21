@@ -21,26 +21,29 @@ public:
   ~NANO_RP2040OTACloudProcess();
 
   virtual bool isOtaCapable() override;
+
 protected:
   virtual OTACloudProcessInterface::State resume(Message* msg=nullptr) override;
 
   virtual OTACloudProcessInterface::State startOTA() override;
 
-  // whene the download is correctly finished we set the mcu to use the newly downloaded binary
+  /* whene the download is correctly finished we set the mcu to use the newly downloaded binary */
   virtual OTACloudProcessInterface::State flashOTA() override;
 
-  // we reboot the device
+  /* we reboot the device */
   virtual OTACloudProcessInterface::State reboot() override;
 
-  // write the decompressed char buffer of the incoming ota
+  /* write the decompressed char buffer of the incoming ota */
   virtual int writeFlash(uint8_t* const buffer, size_t len) override;
 
   virtual void reset() override;
 
+  /* SHA256 functions */
   void* appStartAddress();
   uint32_t appSize();
   bool appFlashOpen() { return true; };
   bool appFlashClose() { return true; };
+
 private:
   FlashIAPBlockDevice flash;
   FILE* decompressed;

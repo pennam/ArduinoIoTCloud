@@ -9,6 +9,7 @@
 */
 
 #include "AIoTC_Config.h"
+
 #if defined(ARDUINO_ARCH_ESP32) && OTA_ENABLED
 #include "OTAEsp32.h"
 #include <esp_ota_ops.h>
@@ -24,18 +25,17 @@ ESP32OTACloudProcess::ESP32OTACloudProcess(MessageStream *ms, Client* client)
 
 }
 
-
 OTACloudProcessInterface::State ESP32OTACloudProcess::resume(Message* msg) {
   return OtaBegin;
 }
 
 OTACloudProcessInterface::State ESP32OTACloudProcess::startOTA() {
-  if(Update.isRunning()) {
+  if (Update.isRunning()) {
     Update.abort();
     DEBUG_VERBOSE("%s: Aborting running update", __FUNCTION__);
   }
 
-  if(!Update.begin(UPDATE_SIZE_UNKNOWN)) {
+  if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
     DEBUG_VERBOSE("%s: failed to initialize flash update", __FUNCTION__);
     return OtaStorageInitFail;
   }
@@ -44,7 +44,6 @@ OTACloudProcessInterface::State ESP32OTACloudProcess::startOTA() {
 }
 
 OTACloudProcessInterface::State ESP32OTACloudProcess::flashOTA() {
-
   if (!Update.end(true)) {
     DEBUG_VERBOSE("%s: Failure to apply OTA update", __FUNCTION__);
     return OtaStorageEndFail;
@@ -56,7 +55,8 @@ OTACloudProcessInterface::State ESP32OTACloudProcess::flashOTA() {
 OTACloudProcessInterface::State ESP32OTACloudProcess::reboot() {
   ESP.restart();
 
-  return Idle; // we won't reach this
+  /* This won't ever be reached */
+  return Idle;
 }
 
 int ESP32OTACloudProcess::writeFlash(uint8_t* const buffer, size_t len) {
@@ -79,16 +79,16 @@ uint32_t ESP32OTACloudProcess::appSize() {
 bool ESP32OTACloudProcess::appFlashOpen() {
   rom_partition = esp_ota_get_running_partition();
 
-  if(rom_partition == nullptr) {
+  if (rom_partition == nullptr) {
     return false;
   }
-
   return true;
 }
 
 void ESP32OTACloudProcess::calculateSHA256(SHA256& sha256_calc) {
-  if(!appFlashOpen()) {
-    return; // TODO error reporting
+  if (!appFlashOpen()) {
+    /* TODO: needs error reporting */
+    return;
   }
 
   sha256_calc.begin();
@@ -97,7 +97,7 @@ void ESP32OTACloudProcess::calculateSHA256(SHA256& sha256_calc) {
 
   uint32_t       read_bytes = 0;
   uint32_t const app_size   = ESP.getSketchSize();
-  for(uint32_t a = rom_partition->address; read_bytes < app_size; ) {
+  for (uint32_t a = rom_partition->address; read_bytes < app_size; ) {
     /* Check if we are reading last sector and compute used size */
     uint32_t const read_size = read_bytes + SPI_FLASH_SEC_SIZE < app_size ?
       SPI_FLASH_SEC_SIZE : app_size - read_bytes;

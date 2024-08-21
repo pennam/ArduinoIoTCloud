@@ -39,7 +39,7 @@ OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::resume(Message* msg)
 }
 
 int NANO_RP2040OTACloudProcess::writeFlash(uint8_t* const buffer, size_t len) {
-  if(decompressed == nullptr) {
+  if (decompressed == nullptr) {
     DEBUG_VERBOSE("writing on a file that is not open"); // FIXME change log message
     return 0;
   }
@@ -68,14 +68,14 @@ OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::startOTA() {
     return ErrorOpenUpdateFileFail;
   }
 
-  // we start the download here
+  /* We start the download here */
   return OTADefaultCloudProcessInterface::startOTA();;
 }
 
 
 OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::flashOTA() {
   int err = 0;
-  if((err = close_fs()) != 0) {
+  if ((err = close_fs()) != 0) {
     return ErrorUnmountFail;
   }
 
@@ -85,7 +85,8 @@ OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::flashOTA() {
 OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::reboot() {
   NVIC_SystemReset();
 
-  return Resume; // This won't ever be reached
+  /* This won't ever be reached */
+  return Resume;
 }
 
 void NANO_RP2040OTACloudProcess::reset() {
@@ -97,7 +98,7 @@ void NANO_RP2040OTACloudProcess::reset() {
 int NANO_RP2040OTACloudProcess::close_fs() {
   int err = 0;
 
-  if(decompressed != nullptr) {
+  if (decompressed != nullptr) {
     fclose(decompressed);
     decompressed = nullptr;
   }
@@ -116,12 +117,9 @@ bool NANO_RP2040OTACloudProcess::isOtaCapable() {
   return true;
 }
 
-// extern void* __stext;
 extern uint32_t __flash_binary_end;
 
-
 void* NANO_RP2040OTACloudProcess::appStartAddress() {
-  // return &__flash_binary_start;
   return (void*)XIP_BASE;
 }
 uint32_t NANO_RP2040OTACloudProcess::appSize() {
