@@ -110,11 +110,11 @@ void STM32H7OTACloudProcess::reset() {
 }
 
 void STM32H7OTACloudProcess::storageClean() {
-  DEBUG_VERBOSE(F("storage clean"));
-
   if (decompressed != nullptr) {
     int res = fclose(decompressed);
-    DEBUG_VERBOSE("error on fclose %d", res);
+    if (res) {
+      DEBUG_VERBOSE("Error on fclose %d", res);
+    }
 
     decompressed = nullptr;
   }
