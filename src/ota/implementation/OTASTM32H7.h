@@ -9,17 +9,12 @@
 */
 
 #pragma once
-#include "ota/interface/OTAInterfaceDefault.h"
 
-#include <QSPIFBlockDevice.h>
+#include "ota/interface/OTAInterfaceDefault.h"
 
 #include <BlockDevice.h>
 #include <MBRBlockDevice.h>
 #include <FATFileSystem.h>
-#include <LittleFileSystem.h>
-
-#include "WiFi.h" /* WiFi from ArduinoCore-mbed */
-#include <SocketHelpers.h>
 
 namespace STM32H747OTA {
   /* External QSPI flash + MBR + FatFs */
