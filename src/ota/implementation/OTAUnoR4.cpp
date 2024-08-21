@@ -108,7 +108,6 @@ bool UNOR4OTACloudProcess::appFlashOpen() {
   fsp_err_t rv = FSP_ERR_UNSUPPORTED;
 
   rv = R_FLASH_LP_Open(&ctrl,&cfg);
-  DEBUG_VERBOSE("Flash open %X", rv);
 
   return rv == FSP_SUCCESS;
 }
@@ -116,7 +115,6 @@ bool UNOR4OTACloudProcess::appFlashOpen() {
 bool UNOR4OTACloudProcess::appFlashClose() {
   fsp_err_t rv = FSP_ERR_UNSUPPORTED;
   rv = R_FLASH_LP_Close(&ctrl);
-  DEBUG_VERBOSE("Flash close %X", rv);
 
   return rv == FSP_SUCCESS;
 }

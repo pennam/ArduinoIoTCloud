@@ -37,7 +37,7 @@ OTACloudProcessInterface::State SAMDOTACloudProcess::fetch() {
 #if OTA_STORAGE_SNU
   uint8_t nina_ota_err_code = 0;
   if (!WiFiStorage.downloadOTA(this->context->url, &nina_ota_err_code)) {
-    DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s error download to nina: %d", __FUNCTION__, nina_ota_err_code);
+    DEBUG_VERBOSE("SAMDOTA::%s Download to nina error: %d", __FUNCTION__, nina_ota_err_code);
     switch(static_cast<ninaOTAError>(nina_ota_err_code)) {
     case ninaOTAError::Open:
       return ErrorOpenUpdateFileFail;
@@ -74,7 +74,7 @@ void SAMDOTACloudProcess::reset() {
 bool SAMDOTACloudProcess::isOtaCapable() {
 #if OTA_STORAGE_SNU
   if (strcmp(WiFi.firmwareVersion(), "1.4.1") < 0) {
-    DEBUG_VERBOSE("ArduinoIoTCloudTCP::%s In order to be ready for cloud OTA, NINA firmware needs to be >= 1.4.1, current %s", __FUNCTION__, WiFi.firmwareVersion());
+    DEBUG_VERBOSE("SAMDOTA::%s In order to be ready for cloud OTA, NINA firmware needs to be >= 1.4.1, current: %s", __FUNCTION__, WiFi.firmwareVersion());
     return false;
   } else {
     return true;

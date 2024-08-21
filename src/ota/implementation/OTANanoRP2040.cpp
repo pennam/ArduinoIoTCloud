@@ -40,7 +40,7 @@ OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::resume(Message* msg)
 
 int NANO_RP2040OTACloudProcess::writeFlash(uint8_t* const buffer, size_t len) {
   if (decompressed == nullptr) {
-    DEBUG_VERBOSE("writing on a file that is not open"); // FIXME change log message
+    DEBUG_VERBOSE("NANO_RP2040OTA::%s invalid file handle", __FUNCTION__);
     return 0;
   }
   return fwrite(buffer, sizeof(uint8_t), len, decompressed);
@@ -49,7 +49,7 @@ int NANO_RP2040OTACloudProcess::writeFlash(uint8_t* const buffer, size_t len) {
 OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::startOTA() {
   int err = -1;
   if ((err = flash.init()) < 0) {
-    DEBUG_VERBOSE("%s: flash.init() failed with %d", __FUNCTION__, err);
+    DEBUG_VERBOSE("NANO_RP2040OTA::%s Flash init error: %d", __FUNCTION__, err);
     return OtaStorageInitFail;
   }
 
@@ -57,13 +57,13 @@ OTACloudProcessInterface::State NANO_RP2040OTACloudProcess::startOTA() {
 
   fs = new mbed::FATFileSystem(SD_MOUNT_PATH); // FIXME can this be allocated in the stack?
   if ((err = fs->reformat(&flash)) != 0) {
-    DEBUG_VERBOSE("%s: fs.reformat() failed with %d", __FUNCTION__, err);
+    DEBUG_VERBOSE("NANO_RP2040OTA::%s Filesystem reformat error: %d", __FUNCTION__, err);
     return ErrorReformatFail;
   }
 
   decompressed = fopen(UPDATE_FILE_NAME, "wb"); // TODO make this a constant
   if (!decompressed) {
-    DEBUG_VERBOSE("%s: fopen() failed", __FUNCTION__);
+    DEBUG_VERBOSE("NANO_RP2040OTA::%s fopen() failed", __FUNCTION__);
     fclose(decompressed);
     return ErrorOpenUpdateFileFail;
   }
@@ -104,7 +104,7 @@ int NANO_RP2040OTACloudProcess::close_fs() {
   }
 
   if (fs != nullptr && (err = fs->unmount()) != 0) {
-    DEBUG_VERBOSE("%s: fs.unmount() failed with %d", __FUNCTION__, err);
+    DEBUG_VERBOSE("NANO_RP2040OTA::%s Filesystem unmount error: %d", __FUNCTION__, err);
   } else {
     delete fs;
     fs = nullptr;

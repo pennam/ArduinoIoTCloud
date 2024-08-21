@@ -32,11 +32,11 @@ OTACloudProcessInterface::State ESP32OTACloudProcess::resume(Message* msg) {
 OTACloudProcessInterface::State ESP32OTACloudProcess::startOTA() {
   if (Update.isRunning()) {
     Update.abort();
-    DEBUG_VERBOSE("%s: Aborting running update", __FUNCTION__);
+    DEBUG_VERBOSE("ESP32OTA::%s Aborting running update", __FUNCTION__);
   }
 
   if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
-    DEBUG_VERBOSE("%s: failed to initialize flash update", __FUNCTION__);
+    DEBUG_VERBOSE("ESP32OTA::%s Failed to initialize flash update", __FUNCTION__);
     return OtaStorageInitFail;
   }
 
@@ -45,7 +45,7 @@ OTACloudProcessInterface::State ESP32OTACloudProcess::startOTA() {
 
 OTACloudProcessInterface::State ESP32OTACloudProcess::flashOTA() {
   if (!Update.end(true)) {
-    DEBUG_VERBOSE("%s: Failure to apply OTA update", __FUNCTION__);
+    DEBUG_VERBOSE("ESP32OTA::%s Failure to apply OTA update", __FUNCTION__);
     return OtaStorageEndFail;
   }
 
@@ -80,6 +80,7 @@ bool ESP32OTACloudProcess::appFlashOpen() {
   rom_partition = esp_ota_get_running_partition();
 
   if (rom_partition == nullptr) {
+    DEBUG_VERBOSE("ESP32OTA::%s Could not get flash partition", __FUNCTION__);
     return false;
   }
   return true;
@@ -104,7 +105,7 @@ void ESP32OTACloudProcess::calculateSHA256(SHA256& sha256_calc) {
 
     /* Use always 4 bytes aligned reads */
     if (!ESP.flashRead(a, reinterpret_cast<uint32_t*>(b), (read_size + 3) & ~3)) {
-      DEBUG_VERBOSE("ESP32::SHA256 Could not read data from flash");
+      DEBUG_VERBOSE("ESP32OTA::%s Could not read data from flash", __FUNCTION__);
       return;
     }
     sha256_calc.update(b, read_size);
