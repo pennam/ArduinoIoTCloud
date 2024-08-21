@@ -12,11 +12,10 @@
 
 #if defined(ARDUINO_ARCH_SAMD) && OTA_ENABLED
 #include "OTASamd.h"
-
 #include <Arduino_DebugUtils.h>
 #if OTA_STORAGE_SNU
-#  include <SNU.h>
-#  include <WiFiNINA.h> /* WiFiStorage */
+  #include <SNU.h>
+  #include <WiFiNINA.h>
 #endif
 
 SAMDOTACloudProcess::SAMDOTACloudProcess(MessageStream *ms)
