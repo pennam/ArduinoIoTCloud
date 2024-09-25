@@ -28,6 +28,7 @@ UNOR4OTACloudProcess::UNOR4OTACloudProcess(MessageStream *ms)
 }
 
 OTACloudProcessInterface::State UNOR4OTACloudProcess::resume(Message* msg) {
+  (void)msg;
   return OtaBegin;
 }
 
@@ -64,14 +65,19 @@ OTACloudProcessInterface::State UNOR4OTACloudProcess::fetch() {
 OTACloudProcessInterface::State UNOR4OTACloudProcess::flashOTA() {
   int ota_err = OTAUpdate::OTA_ERROR_NONE;
 
-  /* Flash new firmware */
-  if ((ota_err = ota.update(UPDATE_FILE_NAME)) != OTAUpdate::OTA_ERROR_NONE) { // This reboots the MCU
+  /* Flash new firmware and reboot the MCU */
+  if ((ota_err = ota.update(UPDATE_FILE_NAME)) != OTAUpdate::OTA_ERROR_NONE) {
     DEBUG_VERBOSE("OTAUpdate::update() failed with %d", ota_err);
     return convertUnor4ErrorToState(ota_err);
   }
+
+  /* This won't ever be reached */
+  return FlashOTA;
 }
 
 OTACloudProcessInterface::State UNOR4OTACloudProcess::reboot() {
+  /* This won't ever be reached */
+  return Reboot;
 }
 
 void UNOR4OTACloudProcess::reset() {
