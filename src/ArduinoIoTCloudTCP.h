@@ -96,9 +96,9 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
       _get_ota_confirmation = cb;
 
       if(_get_ota_confirmation) {
-        _ota.setOtaPolicies(OTACloudProcessInterface::ApprovalRequired);
+        _ota.setOtaPolicy(OTACloudProcessInterface::ApprovalRequired);
       } else {
-        _ota.setOtaPolicies(OTACloudProcessInterface::None);
+        _ota.clearOtaPolicy(OTACloudProcessInterface::ApprovalRequired);
       }
     }
 
