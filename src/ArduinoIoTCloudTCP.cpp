@@ -204,6 +204,108 @@ int ArduinoIoTCloudTCP::begin(bool const enable_watchdog, String brokerAddress, 
   return 1;
 }
 
+#if defined(BOARD_HAS_SECURE_ELEMENT)
+static void hexStringToBytes(String& in, byte out[], int length) {
+  int inLength = in.length();
+  in.toUpperCase();
+  int outLength = 0;
+
+  for (int i = 0; i < inLength && outLength < length; i += 2) {
+    char highChar = in[i];
+    char lowChar = in[i + 1];
+
+    byte highByte = (highChar <= '9') ? (highChar - '0') : (highChar + 10 - 'A');
+    byte lowByte = (lowChar <= '9') ? (lowChar - '0') : (lowChar + 10 - 'A');
+
+    out[outLength++] = (highByte << 4) | (lowByte & 0xF);
+  }
+}
+
+int ArduinoIoTCloudTCP::updateCertificate(String issueYear, String issueMonth, String issueDay, String issueHour, String expireYears, String serialNumber, String authorityKeyIdentifier, String signature)
+{
+  ECP256Certificate Certificate;
+
+  byte serialNumberBytes[ECP256_CERT_SERIAL_NUMBER_LENGTH];
+  byte authorityKeyIdentifierBytes[ECP256_CERT_AUTHORITY_KEY_ID_LENGTH];
+  byte signatureBytes[ECP256_CERT_SIGNATURE_LENGTH];
+
+  hexStringToBytes(serialNumber, serialNumberBytes, sizeof(serialNumberBytes));
+  hexStringToBytes(authorityKeyIdentifier, authorityKeyIdentifierBytes, sizeof(authorityKeyIdentifierBytes));
+  hexStringToBytes(signature, signatureBytes, sizeof(signatureBytes));
+
+  if (!_selement.begin())
+  {
+    DEBUG_ERROR("ArduinoIoTCloudTCP::%s could not initialize secure element.", __FUNCTION__);
+#if defined(ARDUINO_UNOWIFIR4)
+    if (String(WiFi.firmwareVersion()) < String("0.4.1")) {
+      DEBUG_ERROR("ArduinoIoTCloudTCP::%s In order to read device certificate, WiFi firmware needs to be >= 0.4.1, current %s", __FUNCTION__, WiFi.firmwareVersion());
+    }
+#endif
+    return 0;
+  }
+  if (!SElementArduinoCloudDeviceId::read(_selement, getDeviceId(), SElementArduinoCloudSlot::DeviceId))
+  {
+    DEBUG_ERROR("ArduinoIoTCloudTCP::%s could not read device id.", __FUNCTION__);
+    return 0;
+  }
+  if (!SElementArduinoCloudCertificate::read(_selement, _cert, SElementArduinoCloudSlot::CompressedCertificate))
+  {
+    DEBUG_ERROR("ArduinoIoTCloudTCP::%s could not read device certificate.", __FUNCTION__);
+    return 0;
+  }
+
+  if (!Certificate.begin()) {
+    /* WARNING: This string is parsed from IoTCloud frontend */
+    Serial.println("Error starting crypto storage!");
+  }
+
+  Certificate.setSubjectCommonName(getDeviceId());
+  Certificate.setIssuerCountryName("US");
+  Certificate.setIssuerOrganizationName("Arduino LLC US");
+  Certificate.setIssuerOrganizationalUnitName("IT");
+  Certificate.setIssuerCommonName("Arduino");
+  Certificate.setSignature(signatureBytes, sizeof(signatureBytes));
+  Certificate.setAuthorityKeyId(authorityKeyIdentifierBytes, sizeof(authorityKeyIdentifierBytes));
+  Certificate.setSerialNumber(serialNumberBytes, sizeof(serialNumberBytes));
+  Certificate.setIssueYear(issueYear.toInt());
+  Certificate.setIssueMonth(issueMonth.toInt());
+  Certificate.setIssueDay(issueDay.toInt());
+  Certificate.setIssueHour(issueHour.toInt());
+  Certificate.setExpireYears(expireYears.toInt());
+
+  if (!SElementArduinoCloudCertificate::build(_selement, Certificate, static_cast<int>(SElementArduinoCloudSlot::Key))) {
+    Serial.println("Error building cert!");
+  }
+
+  String cert = Certificate.getCertPEM();
+  if (!cert) {
+    Serial.println("Error generating cert!");
+  }
+  Serial.println("New Cert PEM = ");
+  Serial.println();
+  Serial.println(cert);
+
+  String oldcert = _cert.getCertPEM();
+  if (!oldcert) {
+    Serial.println("Error generating cert!");
+  }
+  Serial.println("Old Cert PEM = ");
+  Serial.println();
+  Serial.println(oldcert);
+
+
+  Serial.println("We have a certificate update");
+
+  if ((Certificate.length() != _cert.length()) || memcmp(_cert.bytes(), Certificate.bytes(), _cert.length() ))
+  {
+    Serial.println("Certificate are different");
+    if (!SElementArduinoCloudCertificate::write(_selement, Certificate, SElementArduinoCloudSlot::CompressedCertificate)) {
+      Serial.println("Error storing cert!");
+    }
+  }
+}
+#endif
+
 void ArduinoIoTCloudTCP::update()
 {
   /* Feed the watchdog. If any of the functions called below

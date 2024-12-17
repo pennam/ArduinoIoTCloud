@@ -1,0 +1,11 @@
+#define SECRET_OPTIONAL_PASS ""
+#define SECRET_SSID ""
+
+#define SECRET_ISSUE_YEAR ""
+#define SECRET_ISSUE_MONTH ""
+#define SECRET_ISSUE_DAY ""
+#define SECRET_ISSUE_HOUR ""
+#define SECRET_EXPIRE_YEARS ""
+#define SECRET_SERIAL_NUMBER ""
+#define SECRET_AUTHORITY_KEY_ID ""
+#define SECRET_SIGNATURE ""

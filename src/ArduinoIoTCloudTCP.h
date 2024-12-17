@@ -77,6 +77,10 @@ class ArduinoIoTCloudTCP: public ArduinoIoTCloudClass
     int begin(ConnectionHandler & connection, bool const enable_watchdog = true, String brokerAddress = DEFAULT_BROKER_ADDRESS_SECURE_AUTH, uint16_t brokerPort = DEFAULT_BROKER_PORT_SECURE_AUTH);
     int begin(bool const enable_watchdog = true, String brokerAddress = DEFAULT_BROKER_ADDRESS_SECURE_AUTH, uint16_t brokerPort = DEFAULT_BROKER_PORT_SECURE_AUTH);
 
+#if defined(BOARD_HAS_SECURE_ELEMENT)
+    int updateCertificate(String issueYear, String issueMonth, String issueDay, String issueHour, String expireYears, String serialNumber, String authorityKeyIdentifier, String signature);
+#endif
+
     #ifdef BOARD_HAS_SECRET_KEY
     inline void setBoardId        (String const device_id) { setDeviceId(device_id); }
     inline void setSecretDeviceKey(String const password)  { _password = password;  }
