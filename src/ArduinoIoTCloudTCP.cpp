@@ -610,6 +610,7 @@ int ArduinoIoTCloudTCP::updateCertificate(String authorityKeyIdentifier, String 
     DEBUG_ERROR("TCP::%s could not read device certificate.", __FUNCTION__);
     return 0;
   }
+  Serial.println(_cert.getCertPEM());
   /* check if we need to update 0 = equal <0 = error skip rebuild */
   if(SElementArduinoCloudCertificate::signatureCompare(_cert.signatureBytes(), signature) <= 0) {
     DEBUG_INFO("TCP::%s request skipped.", __FUNCTION__);
