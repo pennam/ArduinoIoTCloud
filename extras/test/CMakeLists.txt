@@ -6,6 +6,16 @@ cmake_minimum_required(VERSION 2.8)
 
 project(testArduinoIoTCloud)
 
+Include(FetchContent)
+
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.4.0
+)
+
+FetchContent_MakeAvailable(Catch2)
+
 ##########################################################################
 
 include_directories(include)
@@ -13,8 +23,6 @@ include_directories(../../src)
 include_directories(../../src/cbor)
 include_directories(../../src/property)
 include_directories(../../src/utility/time)
-include_directories(external/catch/v2.13.10/include)
-include_directories(external/fakeit/v2.0.5/include)
 
 ##########################################################################
 
@@ -45,6 +53,7 @@ set(TEST_SRCS
   src/test_writeOnly.cpp
   src/test_writeOnDemand.cpp
   src/test_writeOnChange.cpp
+  src/test_TimedAttempt.cpp
 )
 
 set(TEST_UTIL_SRCS
@@ -53,6 +62,7 @@ set(TEST_UTIL_SRCS
 )
 
 set(TEST_DUT_SRCS
+  ../../src/utility/time/TimedAttempt.cpp
   ../../src/property/Property.cpp
   ../../src/property/PropertyContainer.cpp
   ../../src/cbor/CBORDecoder.cpp
@@ -84,7 +94,7 @@ set(TEST_TARGET_SRCS
 
 ##########################################################################
 
-add_compile_definitions(HOST)
+add_compile_definitions(HOST HAS_TCP)
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 add_compile_options(-Wno-cast-function-type)
 
@@ -97,6 +107,8 @@ add_executable(
   ${TEST_TARGET}
   ${TEST_TARGET_SRCS}
 )
+
+target_link_libraries( ${TEST_TARGET} Catch2WithMain )
 
 ##########################################################################
 
