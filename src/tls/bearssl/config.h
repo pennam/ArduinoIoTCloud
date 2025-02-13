@@ -165,7 +165,7 @@
  *
 #define BR_ARMEL_CORTEXM_GCC   1
  */
-#if defined(ARDUINO) && defined(__arm__)
+#if defined(ARDUINO) && defined(__arm__) && !defined(__ZEPHYR__)
 #define BR_ARMEL_CORTEXM_GCC   1
 #endif
 

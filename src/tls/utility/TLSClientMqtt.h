@@ -68,6 +68,12 @@ enum class ArduinoIoTAuthenticationMode
    */
   #include <WiFiClientSecure.h>
   class TLSClientMqtt : public WiFiClientSecure {
+#elif defined(__ZEPHYR__)
+  /*
+   *
+   */
+  #include <ZephyrSSLClient.h>
+  class TLSClientMqtt : public ZephyrSSLClient {
 #endif
 
 public:

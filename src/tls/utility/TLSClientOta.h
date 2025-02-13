@@ -62,6 +62,12 @@
    */
   #include <WiFiClientSecure.h>
   class TLSClientOta : public WiFiClientSecure {
+#elif defined(__ZEPHYR__)
+  /*
+   *
+   */
+  #include <ZephyrSSLClient.h>
+  class TLSClientOta : public ZephyrSSLClient {
 #endif
 
 public:

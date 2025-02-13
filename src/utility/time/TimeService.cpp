@@ -27,7 +27,7 @@
 #include "NTPUtils.h"
 #include "TimeService.h"
 
-#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266)
+#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
   #include "RTCMillis.h"
 #elif defined(ARDUINO_ARCH_SAMD)
   #include <RTCZero.h>
@@ -41,7 +41,7 @@
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266)
+#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
 RTCMillis rtc;
 #elif defined(ARDUINO_ARCH_SAMD)
 RTCZero rtc;
@@ -71,13 +71,13 @@ void mbed_setRTC(unsigned long time);
 unsigned long mbed_getRTC();
 #endif
 
-#ifdef ARDUINO_ARCH_ESP32
+#if defined(ARDUINO_ARCH_ESP32)
 void esp32_initRTC();
 void esp32_setRTC(unsigned long time);
 unsigned long esp32_getRTC();
 #endif
 
-#ifdef ARDUINO_ARCH_ESP8266
+#if defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
 void esp8266_initRTC();
 void esp8266_setRTC(unsigned long time);
 unsigned long esp8266_getRTC();
@@ -88,6 +88,12 @@ void renesas_initRTC();
 void renesas_setRTC(unsigned long time);
 unsigned long renesas_getRTC();
 #endif
+
+//#if defined(__ZEPHYR__)
+//void zephyr_initRTC();
+//void zephyr_setRTC(unsigned long time);
+//unsigned long zephyr_getRTC();
+//#endif
 
 #endif /* HAS_NOTECARD */
 
@@ -351,7 +357,7 @@ void TimeServiceClass::initRTC()
   mbed_initRTC();
 #elif defined (ARDUINO_ARCH_ESP32)
   esp32_initRTC();
-#elif defined (ARDUINO_ARCH_ESP8266)
+#elif defined (ARDUINO_ARCH_ESP8266) || defined (__ZEPHYR__)
   esp8266_initRTC();
 #elif defined (ARDUINO_ARCH_RENESAS)
   renesas_initRTC();
@@ -370,7 +376,7 @@ void TimeServiceClass::setRTC(unsigned long time)
   mbed_setRTC(time);
 #elif defined (ARDUINO_ARCH_ESP32)
   esp32_setRTC(time);
-#elif defined (ARDUINO_ARCH_ESP8266)
+#elif defined (ARDUINO_ARCH_ESP8266)  || defined (__ZEPHYR__)
   esp8266_setRTC(time);
 #elif defined (ARDUINO_ARCH_RENESAS)
   renesas_setRTC(time);
@@ -389,7 +395,7 @@ unsigned long TimeServiceClass::getRTC()
   return mbed_getRTC();
 #elif defined (ARDUINO_ARCH_ESP32)
   return esp32_getRTC();
-#elif defined (ARDUINO_ARCH_ESP8266)
+#elif defined (ARDUINO_ARCH_ESP8266) || defined (__ZEPHYR__)
   return esp8266_getRTC();
 #elif defined (ARDUINO_ARCH_RENESAS)
   return renesas_getRTC();
@@ -489,7 +495,7 @@ unsigned long mbed_getRTC()
 }
 #endif
 
-#ifdef ARDUINO_ARCH_ESP32
+#if defined(ARDUINO_ARCH_ESP32)
 void esp32_initRTC()
 {
   //configTime(0, 0, "time.arduino.cc", "pool.ntp.org", "time.nist.gov");
@@ -507,7 +513,7 @@ unsigned long esp32_getRTC()
 }
 #endif
 
-#ifdef ARDUINO_ARCH_ESP8266
+#if defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
 void esp8266_initRTC()
 {
   rtc.begin();

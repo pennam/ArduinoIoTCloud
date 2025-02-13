@@ -141,6 +141,11 @@
   #define BOARD_HAS_SECURE_ELEMENT
 #endif
 
+#if defined(__ZEPHYR__)
+  #define BOARD_HAS_SECRET_KEY
+  #define HAS_TCP
+#endif
+
 #endif // HAS_NOTECARD
 
 #if defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_NICLA_VISION) || defined(ARDUINO_OPTA) || defined(ARDUINO_GIGA)

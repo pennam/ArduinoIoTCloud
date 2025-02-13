@@ -21,7 +21,7 @@
 
 #include "AIoTC_Config.h"
 
-#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266)
+#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
 
 #include <Arduino.h>
 #include "RTCMillis.h"

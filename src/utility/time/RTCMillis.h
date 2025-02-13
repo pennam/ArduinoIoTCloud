@@ -18,7 +18,7 @@
 #ifndef ARDUINO_IOT_CLOUD_RTC_MILLIS_H_
 #define ARDUINO_IOT_CLOUD_RTC_MILLIS_H_
 
-#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266)
+#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
 
 /**************************************************************************************
  * INCLUDE
