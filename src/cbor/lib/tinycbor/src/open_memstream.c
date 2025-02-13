@@ -57,7 +57,6 @@ static RetType write_to_buffer(void *cookie, const char *data, LenType len)
     char *ptr = *b->ptr;
     size_t newsize;
 
-    errno = EFBIG;
     if (unlikely(add_check_overflow(*b->len, len, &newsize)))
         return -1;
 

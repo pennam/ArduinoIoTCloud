@@ -98,7 +98,7 @@ int NTPUtils::getRandomPort(int const min_port, int const max_port)
   /* Uses HW Random Number Generator */
   return random(min_port, max_port);
 #else
-  randomSeed(analogRead(0));
+  //randomSeed(analogRead(0));
   return random(min_port, max_port);
 #endif
 }
