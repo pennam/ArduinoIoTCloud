@@ -5,8 +5,9 @@
 #endif
 #include <ArduinoIoTCloud.h>
 #include <Arduino_ConnectionHandler.h>
-#include "ConfiguratorAgents/agents/BLE/BLEAgent.h"
-#include "ConfiguratorAgents/agents/Serial/SerialAgent.h"
+#include <GenericConnectionHandler.h>
+#include "configuratorAgents/agents/BLEAgent.h"
+#include "configuratorAgents/agents/SerialAgent.h"
 
 void onLedChange();
 
