@@ -51,7 +51,7 @@
 #endif
 
 #ifndef DEBUG_VERBOSE
-  #define DEBUG_VERBOSE(fmt, ...) //Debug.print(DBG_VERBOSE, fmt, ## __VA_ARGS__)
+  #define DEBUG_VERBOSE(fmt, ...) Debug.print(DBG_VERBOSE, fmt, ## __VA_ARGS__)
 #endif
 
 /******************************************************************************
