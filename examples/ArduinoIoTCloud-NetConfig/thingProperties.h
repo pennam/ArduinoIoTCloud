@@ -6,6 +6,7 @@
 #include <ArduinoIoTCloud.h>
 #include <Arduino_ConnectionHandler.h>
 #include <GenericConnectionHandler.h>
+#include <Arduino_NetworkConfigurator.h>
 #include <configuratorAgents/agents/BLEAgent.h>
 #include <configuratorAgents/agents/SerialAgent.h>
 
