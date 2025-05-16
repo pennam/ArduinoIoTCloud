@@ -22,6 +22,11 @@
   #if __has_include (<Notecard.h>)
     #define HAS_NOTECARD
   #endif
+
+  #if __has_include (<ANetworkConfigurator_Config.h>)
+    #define HAS_NETWORK_CONFIGURATOR
+  #endif
+
 #endif
 
 #include <ArduinoECCX08Config.h>
@@ -147,6 +152,7 @@
 #if defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_NICLA_VISION) || defined(ARDUINO_OPTA) || defined(ARDUINO_GIGA)
   #define BOARD_STM32H7
 #endif
+
 
 /******************************************************************************
  * CONSTANTS
