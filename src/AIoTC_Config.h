@@ -24,9 +24,7 @@
   #endif
 
   #if __has_include (<ANetworkConfigurator_Config.h>)
-    #define NETWORK_CONFIGURATOR_ENABLED (1)
-  #else
-    #define NETWORK_CONFIGURATOR_ENABLED (0)
+    #define HAS_NETWORK_CONFIGURATOR
   #endif
 
 #endif

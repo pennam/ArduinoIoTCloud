@@ -27,7 +27,7 @@
 
 ArduinoIoTCloudClass::ArduinoIoTCloudClass()
 : _connection{nullptr}
-#if NETWORK_CONFIGURATOR_ENABLED
+#if defined (HAS_NETWORK_CONFIGURATOR)
 , _configurator{nullptr}
 #endif
 , _time_service(TimeService)

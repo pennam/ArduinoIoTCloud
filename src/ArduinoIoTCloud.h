@@ -104,9 +104,9 @@ class ArduinoIoTCloudClass
     inline unsigned long getInternalTime()              { return _time_service.getTime(); }
     inline unsigned long getLocalTime()                 { return _time_service.getLocalTime(); }
 
-    #if NETWORK_CONFIGURATOR_ENABLED
+#if defined (HAS_NETWORK_CONFIGURATOR)
     inline void setConfigurator(NetworkConfiguratorClass & configurator) { _configurator = &configurator; }
-    #endif
+#endif
     void addCallback(ArduinoIoTCloudEvent const event, OnCloudEventCallback callback);
 
 #define addProperty( v, ...) addPropertyReal(v, #v, __VA_ARGS__)
@@ -152,9 +152,9 @@ class ArduinoIoTCloudClass
   protected:
 
     ConnectionHandler * _connection;
-    #if NETWORK_CONFIGURATOR_ENABLED
+#if defined (HAS_NETWORK_CONFIGURATOR)
     NetworkConfiguratorClass * _configurator;
-    #endif
+#endif
     TimeServiceClass & _time_service;
     String _thing_id;
     String _lib_version;

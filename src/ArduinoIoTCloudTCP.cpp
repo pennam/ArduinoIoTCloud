@@ -188,7 +188,7 @@ int ArduinoIoTCloudTCP::begin(bool const enable_watchdog, String brokerAddress, 
   }
 #endif
 
-#if NETWORK_CONFIGURATOR_ENABLED
+#if defined (HAS_NETWORK_CONFIGURATOR)
   if(_configurator != nullptr){
     _configurator->enableAgent(ConfiguratorAgent::AgentTypes::BLE,false);
     _configurator->begin();
@@ -233,11 +233,11 @@ void ArduinoIoTCloudTCP::update()
   /* Poll the network configurator to check if it is updating the configuration.
    * The polling must be performed only if the the first configuration is completed.
    */
-  #if NETWORK_CONFIGURATOR_ENABLED
+#if defined (HAS_NETWORK_CONFIGURATOR)
   if(_configurator != nullptr && _state > State::Init && _configurator->update() == NetworkConfiguratorStates::UPDATING_CONFIG){
     _state = State::ConfigPhy;
   }
-  #endif
+#endif
 
 #if OTA_ENABLED
   /* OTA FSM needs to reach the Idle state before being able to run independently from
@@ -293,7 +293,7 @@ void ArduinoIoTCloudTCP::disconnect() {
 
 ArduinoIoTCloudTCP::State ArduinoIoTCloudTCP::handle_ConfigPhy()
 {
-#if NETWORK_CONFIGURATOR_ENABLED
+#if defined (HAS_NETWORK_CONFIGURATOR)
   if (_configurator == nullptr) {
     return State::Init;
   }
