@@ -22,6 +22,13 @@
   #if __has_include (<Notecard.h>)
     #define HAS_NOTECARD
   #endif
+
+  #if __has_include (<ANetworkConfigurator_Config.h>)
+    #define NETWORK_CONFIGURATOR_ENABLED (1)
+  #else
+    #define NETWORK_CONFIGURATOR_ENABLED (0)
+  #endif
+
 #endif
 
 #include <ArduinoECCX08Config.h>
@@ -148,12 +155,6 @@
   #define BOARD_STM32H7
 #endif
 
-#if defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_NICLA_VISION) || defined(ARDUINO_OPTA) || defined(ARDUINO_GIGA) \
-  || defined(ARDUINO_UNOR4_WIFI) || defined(ARDUINO_PORTENTA_C33)
-  #define NETWORK_CONFIGURATOR_ENABLED (1)
-#else
-  #define NETWORK_CONFIGURATOR_ENABLED (0)
-#endif
 
 /******************************************************************************
  * CONSTANTS
