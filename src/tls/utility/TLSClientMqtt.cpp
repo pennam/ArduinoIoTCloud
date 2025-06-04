@@ -66,11 +66,11 @@ void TLSClientMqtt::begin(ConnectionHandler & connection, ArduinoIoTAuthenticati
    */
   (void)connection;
   Serial1.begin(115200);
-  SerialTransport transport(&Serial1);
-  RPCClient rpc(transport);
+  static SerialTransport transport(&Serial1);
+  transport.begin();
+  static RPCClient rpc(transport);
   setClient(rpc);
   setCACert(AIoTUPCert);
-  //transport.begin();
   /* Temporary force CACert to add new CA without rebuilding firmware */
   //if (authMode == ArduinoIoTAuthenticationMode::CERTIFICATE) {
   //  setCACert(AIoTSSCert);
