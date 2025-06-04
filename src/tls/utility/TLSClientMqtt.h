@@ -59,9 +59,9 @@ enum class ArduinoIoTAuthenticationMode
   /*
    * Arduino UNO R4 WiFi
    */
-  #include <WiFiSSLClient.h>
-  class TLSClientMqtt : public WiFiSSLClient {
-#elif defined(BOARD_ESP)
+  #include <Arduino_WebRPCTLSClient.h>
+  class TLSClientMqtt : public WebRPCTLSClient {
+#elif defined(BOARD_ESP) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
   /*
    * ESP32*
    * ESP82*

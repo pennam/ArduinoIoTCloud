@@ -51,7 +51,7 @@
 #endif
 
 #ifndef DEBUG_VERBOSE
-  #define DEBUG_VERBOSE(fmt, ...) //Debug.print(DBG_VERBOSE, fmt, ## __VA_ARGS__)
+  #define DEBUG_VERBOSE(fmt, ...) Debug.print(DBG_VERBOSE, fmt, ## __VA_ARGS__)
 #endif
 
 /******************************************************************************
@@ -132,7 +132,7 @@
 #endif
 
 #if defined(ARDUINO_UNOR4_WIFI)
-  #define BOARD_HAS_SOFTSE
+  //#define BOARD_HAS_SOFTSE
   #define BOARD_HAS_SECRET_KEY
   #define HAS_TCP
 #endif

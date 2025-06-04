@@ -53,7 +53,7 @@
   /*
    * Arduino UNO R4 WiFi
    */
-  #include <WiFiSSLClient.h>
+  #include <Arduino_WebRPCClient.h>
   class TLSClientOta : public WiFiSSLClient {
 #elif defined(BOARD_ESP)
   /*

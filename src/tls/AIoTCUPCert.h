@@ -24,7 +24,7 @@
  ******************************************************************************/
 
 #include <AIoTC_Config.h>
-#if defined(ARDUINO_ARCH_ESP32) ||  defined (ARDUINO_EDGE_CONTROL)
+#if defined(ARDUINO_ARCH_ESP32) ||  defined (ARDUINO_EDGE_CONTROL) || defined (ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_UNOR4_WIFI)
 
 /******************************************************************************
  * CONSTANTS
