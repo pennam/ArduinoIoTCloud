@@ -27,7 +27,7 @@
 #include "NTPUtils.h"
 #include "TimeService.h"
 
-#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
+#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_UNOR4_WIFI)
   #include "RTCMillis.h"
 #elif defined(ARDUINO_ARCH_SAMD)
   #include <RTCZero.h>
@@ -41,7 +41,7 @@
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
+#if defined(HAS_NOTECARD) || defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_UNOR4_WIFI)
 RTCMillis rtc;
 #elif defined(ARDUINO_ARCH_SAMD)
 RTCZero rtc;
@@ -77,7 +77,7 @@ void esp32_setRTC(unsigned long time);
 unsigned long esp32_getRTC();
 #endif
 
-#if defined(ARDUINO_ARCH_ESP8266) || defined(__ZEPHYR__)
+#if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_UNOR4_WIFI)
 void esp8266_initRTC();
 void esp8266_setRTC(unsigned long time);
 unsigned long esp8266_getRTC();
@@ -531,7 +531,7 @@ unsigned long esp8266_getRTC()
 #endif
 
 #ifdef ARDUINO_ARCH_RENESAS
-void renesas_initRTC()
+/*void renesas_initRTC()
 {
   RTC.begin();
 }
@@ -547,7 +547,7 @@ unsigned long renesas_getRTC()
   RTCTime t;
   RTC.getTime(t);
   return t.getUnixTime();
-}
+}*/
 #endif
 
 #endif /* HAS_NOTECARD */

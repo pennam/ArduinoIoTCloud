@@ -26,6 +26,8 @@
 
 #include <ArduinoECCX08Config.h>
 
+
+
 /******************************************************************************
  * USER CONFIGURABLE DEFINES
  ******************************************************************************/
@@ -135,6 +137,7 @@
   //#define BOARD_HAS_SOFTSE
   #define BOARD_HAS_SECRET_KEY
   #define HAS_TCP
+  #define __ZEPHYR__
 #endif
 
 #if defined(BOARD_HAS_SOFTSE) || defined(BOARD_HAS_OFFLOADED_ECCX08) || defined(BOARD_HAS_ECCX08) || defined(BOARD_HAS_SE050)
